@@ -5,11 +5,21 @@ RUN mkdir -p /usr/share/man/man1 && \
     apt update && apt install -y \
     git \
     ca-certificates \
-    openjdk-11-jre \
     zsh \
     curl \
     wget \
-    fonts-powerline 
+    fonts-powerline
+#     openjdk-11-jre \
+#     libassuan0 \
+#     libgpg-error0
+
+# RUN apt install -y \
+#     gpg \
+#     gnupg \
+#     gpg-agent \
+#     socat
+
+
     
 ENV JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
 
