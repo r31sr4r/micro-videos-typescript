@@ -117,5 +117,59 @@ describe('Category Unit Tests', () => {
         expect(category.created_at).toBeInstanceOf(Date);
 
     });
+
+    it('should update name, description and is active', () => {
+        const category = new Category({name: 'Movie'});
+        category.update('Movie 2', 'Movie 2 description', false);
+        expect(category.props).toMatchObject({
+            name: 'Movie 2',
+            description: 'Movie 2 description',
+            is_active: false
+        })
+    });
+    
+    it('should update name and description', () => {
+        const category = new Category({name: 'Movie'});
+        category.update('Movie 2', 'Movie 2 description', category.is_active);
+        expect(category.props).toMatchObject({
+            name: 'Movie 2',
+            description: 'Movie 2 description'
+        });
+    });
+
+    it('should update name and is active', () => {
+        const category = new Category({name: 'Movie'});
+        category.update('Movie 2', category.description, false);
+        expect(category.props).toMatchObject({
+            name: 'Movie 2',
+            is_active: false
+        });
+    });
+
+    it('should update name', () => {
+        const category = new Category({name: 'Movie'});
+        category.update('Movie 2', category.description, category.is_active);
+        expect(category.props).toMatchObject({
+            name: 'Movie 2'
+        });
+    });
+
+    it('should activate a category', () => {
+        const category = new Category({name: 'Movie'});
+        category.activate();
+        expect(category.props).toMatchObject({
+            is_active: true
+        });
+        expect(category.is_active).toBeTruthy();
+    });
+
+    it('should deactivate a category', () => {
+        const category = new Category({name: 'Movie', is_active: true});
+        category.deactivate();
+        expect(category.props).toMatchObject({
+            is_active: false
+        });
+        expect(category.is_active).toBeFalsy();
+    });
     
 });
