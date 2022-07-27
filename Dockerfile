@@ -1,4 +1,4 @@
-FROM node:14.15.4-slim
+FROM node:16.15.0
 
 RUN mkdir -p /usr/share/man/man1 && \
     echo 'deb http://ftp.debian.org/debian stretch-backports main' | tee /etc/apt/sources.list.d/stretch-backports.list && \
@@ -8,16 +8,12 @@ RUN mkdir -p /usr/share/man/man1 && \
     zsh \
     curl \
     wget \
-    fonts-powerline
-#     openjdk-11-jre \
-#     libassuan0 \
-#     libgpg-error0
-
-# RUN apt install -y \
-#     gpg \
-#     gnupg \
-#     gpg-agent \
-#     socat
+    fonts-powerline \
+    openjdk-11-jre \
+    gpg \     
+    gnupg2 \
+    gpg-agent \
+    socat
 
 
     
