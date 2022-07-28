@@ -4,6 +4,7 @@
   "description": "admin do catalogo de videos",
   "main": "index.js",
   "dependencies": {
+    "class-validator": "^0.13.2",
     "nvm": "^0.0.4"
   },
   "devDependencies": {
