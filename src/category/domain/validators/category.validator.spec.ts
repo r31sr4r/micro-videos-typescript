@@ -8,7 +8,6 @@ describe('CategoryValidator Tests', () => {
 
 	beforeEach(() => (validator = CategoryValidatorFactory.create()));
 	test('invalidation cases for name field', () => {
-        //@ts-ignore
 		expect({ validator, data: null }).containsErrorMessages({
 			name: [
 				'name should not be empty',
@@ -17,36 +16,45 @@ describe('CategoryValidator Tests', () => {
 			],
 		});
 
-		// let isValid = validator.validate(null);
+		expect({ validator, data: { name: '' } }).containsErrorMessages({
+			name: ['name should not be empty'],
+		});
 
-		// expect(isValid).toBe(false);
-		// expect(validator.errors['name']).toStrictEqual([
-		// 	'name should not be empty',
-		// 	'name must be a string',
-		// 	'name must be shorter than or equal to 255 characters',
-		// ]);
+		expect({ validator, data: { name: 5 as any } }).containsErrorMessages({
+			name: [
+				'name must be a string',
+				'name must be shorter than or equal to 255 characters',
+			],
+		});
 
-		// isValid = validator.validate({ name: '' });
+		expect({
+			validator,
+			data: { name: 'a'.repeat(256) },
+		}).containsErrorMessages({
+			name: ['name must be shorter than or equal to 255 characters'],
+		});
+	});
 
-		// expect(isValid).toBe(false);
-		// expect(validator.errors['name']).toStrictEqual([
-		// 	'name should not be empty',
-		// ]);
+	test('invalidation cases for description field', () => {
+		expect({ validator, data: { name: 'some name', description: 5 as any } }).containsErrorMessages({
+			description: [
+				'description must be a string',
+			],
+		});
+	});
 
-		// isValid = validator.validate({ name: 5 as any });
+	test('invalidation cases for is_active field', () => {
+		expect({ validator, data: { name: 'some name', is_active: 5 as any } }).containsErrorMessages({
+			is_active: [
+				'is_active must be a boolean value',
+			],
+		});
 
-		// expect(isValid).toBe(false);
-		// expect(validator.errors['name']).toStrictEqual([
-		// 	'name must be a string',
-		// 	'name must be shorter than or equal to 255 characters',
-		// ]);
-
-		// isValid = validator.validate({ name: 'a'.repeat(256) });
-
-		// expect(isValid).toBe(false);
-		// expect(validator.errors['name']).toStrictEqual([
-		// 	'name must be shorter than or equal to 255 characters',
-		// ]);
+		expect({ validator, data: { name: 'some name', is_active: 'true' } }).containsErrorMessages({
+			is_active: [
+				'is_active must be a boolean value',
+			],
+		});		
 	});
 
 	test('valid cases for fields', () => {
