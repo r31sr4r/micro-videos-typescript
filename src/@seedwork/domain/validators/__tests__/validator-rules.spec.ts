@@ -1,4 +1,4 @@
-import ValidationError from '../../errors/validation-error';
+import { ValidationError } from '../../errors/validation-error';
 import ValidatorRules from '../validator-rules';
 
 type Values = {
@@ -127,7 +127,7 @@ describe('ValidatorRules Unit Tests', () => {
 			assertIsInvalid({
 				value: item.value,
 				property: item.property,
-				rule: 'maxlength',
+				rule: 'maxLength',
 				error,
 				params: [10],
 			});
@@ -189,17 +189,17 @@ describe('ValidatorRules Unit Tests', () => {
 	it('should throw a validation error when combine two or more validation rules', () => {
 		let validator = ValidatorRules.values(null, 'field');
 		expect(() => {
-			validator.required().string().maxlength(5);
+			validator.required().string().maxLength(5);
 		}).toThrow(new ValidationError('field is required'));
 
 		validator = ValidatorRules.values(5, 'field');
 		expect(() => {
-			validator.required().string().maxlength(5);
+			validator.required().string().maxLength(5);
 		}).toThrow(new ValidationError('field must be a string'));
 
 		validator = ValidatorRules.values("123456", 'field');
         expect(() => {
-			validator.required().string().maxlength(5);
+			validator.required().string().maxLength(5);
 		}).toThrow(new ValidationError('field must be less or equal than 5 characters'));
 
         validator = ValidatorRules.values(null, 'field');
@@ -219,9 +219,9 @@ describe('ValidatorRules Unit Tests', () => {
         expect.assertions(0);
 
         ValidatorRules.values("some value", 'field').required().string();
-        ValidatorRules.values(null, 'field').string().maxlength(10);
-        ValidatorRules.values(undefined, 'field').string().maxlength(10);
-        ValidatorRules.values("some value", 'field').required().string().maxlength(10);
+        ValidatorRules.values(null, 'field').string().maxLength(10);
+        ValidatorRules.values(undefined, 'field').string().maxLength(10);
+        ValidatorRules.values("some value", 'field').required().string().maxLength(10);
 
         ValidatorRules.values(true, 'field').required().boolean();
         ValidatorRules.values(false, 'field').required().boolean();
