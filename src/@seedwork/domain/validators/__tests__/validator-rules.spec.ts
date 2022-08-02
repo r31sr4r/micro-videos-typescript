@@ -143,7 +143,7 @@ describe('ValidatorRules Unit Tests', () => {
 			assertIsValid({
 				value: item.value,
 				property: item.property,
-				rule: 'maxlength',
+				rule: 'maxLength',
 				error,
 				params: [10],
 			});
