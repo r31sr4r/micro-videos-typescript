@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "admin do catalogo de videos",
   "main": "index.js",
+  "imports": {
+    "#seedwork/*": "./dist/@seedwork/*.js",
+    "#category/*": "./dist/category/*.js"
+  },
   "dependencies": {
     "class-validator": "^0.13.2",
     "jest": "^27.5.1",
@@ -15,6 +19,7 @@
     "@types/lodash": "^4.14.182",
     "@types/node": "^16.11.45",
     "@types/uuid": "^8.3.4",
+    "create-ts-index": "^1.14.0",
     "lodash": "^4.17.21",
     "regenerator-runtime": "^0.13.9",
     "ts-node": "^10.9.1",
@@ -27,7 +32,9 @@
     "tsc:check": "npm run tsc -- --noEmit",
     "clean:tst": "rm tsconfig.tsbuildinfo",
     "test": "jest",
-    "test:coverage": "npm run test -- --coverage"
+    "test:coverage": "npm run test -- --coverage",
+    "cti": "cti",
+    "cti:@core": "sh ./cti.sh"
   },
   "keywords": [],
   "author": "",
