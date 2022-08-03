@@ -1,42 +1,48 @@
 {
-  "name": "micro-videos",
-  "version": "1.0.0",
-  "description": "admin do catalogo de videos",
+  "name": "micro-videos-typescript",
+  "version": "0.0.1",
+  "description": "",
   "main": "index.js",
-  "imports": {
-    "#seedwork/*": "./dist/@seedwork/*.js",
-    "#category/*": "./dist/category/*.js"
-  },
   "dependencies": {
     "class-validator": "^0.13.2",
-    "jest": "^27.5.1",
-    "nvm": "^0.0.4"
-  },
-  "devDependencies": {
-    "@swc/core": "^1.2.218",
-    "@swc/jest": "^0.2.22",
-    "@types/jest": "^27.5.1",
-    "@types/lodash": "^4.14.182",
-    "@types/node": "^16.11.45",
-    "@types/uuid": "^8.3.4",
     "create-ts-index": "^1.14.0",
-    "lodash": "^4.17.21",
-    "regenerator-runtime": "^0.13.9",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.7.4",
-    "uuid": "^8.3.2"
+    "dayjs": "^1.11.1",
+    "fast-glob": "^3.2.11",
+    "fastq": "^1.13.0",
+    "fp-ts": "^2.12.0",
+    "glob-parent": "^5.1.2",
+    "is-extglob": "^2.1.1",
+    "is-glob": "^4.0.3",
+    "jest": "^27.5.1",
+    "libphonenumber-js": "^1.9.50",
+    "merge": "^2.1.1",
+    "merge2": "^1.4.1",
+    "my-easy-fp": "^0.9.0",
+    "queue-microtask": "^1.2.3",
+    "reusify": "^1.0.4",
+    "run-parallel": "^1.2.0",
+    "tslib": "^2.4.0",
+    "typescript": "^4.6.2",
+    "uuid": "^8.3.2",
+    "validator": "^13.7.0"
   },
+  "workspaces": [
+    "./src/@core",
+    "./src/nestjs"
+  ],
+  "devDependencies": {},
   "scripts": {
-    "ts-node": "ts-node",
-    "tsc": "tsc",
-    "tsc:check": "npm run tsc -- --noEmit",
-    "clean:tst": "rm tsconfig.tsbuildinfo",
-    "test": "jest",
-    "test:coverage": "npm run test -- --coverage",
-    "cti": "cti",
-    "cti:@core": "sh ./cti.sh"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/r31sr4r/micro-videos-typescript.git"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/r31sr4r/micro-videos-typescript/issues"
+  },
+  "homepage": "https://github.com/r31sr4r/micro-videos-typescript#readme"
 }
