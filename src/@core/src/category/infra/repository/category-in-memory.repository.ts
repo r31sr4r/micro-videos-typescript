@@ -3,11 +3,10 @@ import { InMemorySearchableRepository } from '../../../@seedwork/domain/reposito
 import { Category } from '../../domain/entities/category';
 import CategoryRepository from '../../domain/repository/category.repository';
 
-export default class CategoryInMemoryRepository
+export class CategoryInMemoryRepository
 	extends InMemorySearchableRepository<Category>
 	implements CategoryRepository.Repository
 {
-
 	sortableFields: string[] = ['name', 'created_at'];
 
 	protected async applyFilter(
@@ -35,3 +34,5 @@ export default class CategoryInMemoryRepository
 		}
 	}
 }
+
+export default CategoryInMemoryRepository;

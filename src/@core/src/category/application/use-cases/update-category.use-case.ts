@@ -1,8 +1,9 @@
-import UseCase from '../../../@seedwork/application/use-case';
+import { default as DefaultUseCase } from "../../../@seedwork/application/use-case";
 import { CategoryRepository } from '../../domain/repository/category.repository';
 import { CategoryOutput, CategoryOutputMapper } from '../dto/category-output';
 
-export default class UpdateCategoryUseCase implements UseCase<Input, Output> {
+export namespace UpdateCategoryUseCase {
+export class UseCase implements DefaultUseCase<Input, Output> {
 	constructor(private categoryRepository: CategoryRepository.Repository) {}
 
 	async execute(input: Input): Promise<Output> {
@@ -30,3 +31,7 @@ export type Input = {
 };
 
 export type Output = CategoryOutput;
+
+}
+
+export default UpdateCategoryUseCase;
