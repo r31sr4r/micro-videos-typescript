@@ -46,4 +46,14 @@ describe('CreateCategoryUseCase Unit Tests', () => {
 			'Entity validation error'
 		);
 	});
+
+	it('should throw an error if name is not provided', async () => {
+		await expect(useCase.execute(null as any)).rejects.toMatchObject({
+			name: [
+				'name should not be empty',
+				'name must be a string',
+				'name must be shorter than or equal to 255 characters',
+			],
+		});
+	});
 });
