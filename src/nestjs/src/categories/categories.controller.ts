@@ -1,45 +1,72 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
+    CreateCategoryUseCase,
+    DeleteCategoryUseCase,
+    GetCategoryUseCase,
+    ListCategoriesUseCase,
+    UpdateCategoryUseCase,
+} from '@fc/micro-videos/category/application';
+import {
+    Controller,
+    Get,
+    Post,
+    Body,
+    Param,
+    Delete,
+    Inject,
+    Put,
+    HttpCode,
+    Query,
 } from '@nestjs/common';
-import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { SearchCategoryDto } from './dto/search-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Controller('categories')
 export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) {}
+    @Inject(CreateCategoryUseCase.UseCase)
+    private createUseCase: CreateCategoryUseCase.UseCase;
 
-  @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoriesService.create(createCategoryDto);
-  }
+    @Inject(UpdateCategoryUseCase.UseCase)
+    private updateUseCase: UpdateCategoryUseCase.UseCase;
 
-  @Get()
-  findAll() {
-    return this.categoriesService.findAll();
-  }
+    @Inject(DeleteCategoryUseCase.UseCase)
+    private deleteUseCase: DeleteCategoryUseCase.UseCase;
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoriesService.findOne(+id);
-  }
+    @Inject(GetCategoryUseCase.UseCase)
+    private getUseCase: GetCategoryUseCase.UseCase;
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateCategoryDto: UpdateCategoryDto,
-  ) {
-    return this.categoriesService.update(+id, updateCategoryDto);
-  }
+    @Inject(ListCategoriesUseCase.UseCase)
+    private listUseCase: ListCategoriesUseCase.UseCase;
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoriesService.remove(+id);
-  }
+    @Post()
+    create(@Body() createCategoryDto: CreateCategoryDto) {
+        return this.createUseCase.execute(createCategoryDto);
+    }
+
+    @Put(':id')
+    update(
+        @Param('id') id: string,
+        @Body() updateCategoryDto: UpdateCategoryDto,
+    ) {
+        return this.updateUseCase.execute({
+            id,
+            ...updateCategoryDto,
+        });
+    }
+
+    @HttpCode(204)
+    @Delete(':id')
+    remove(@Param('id') id: string) {
+        return this.deleteUseCase.execute({ id });
+    }
+
+    @Get(':id')
+    findOne(@Param('id') id: string) {
+        return this.getUseCase.execute({ id });
+    }
+
+    @Get()
+    search(@Query() searchParams: SearchCategoryDto) {
+        return this.listUseCase.execute(searchParams);
+    }
 }

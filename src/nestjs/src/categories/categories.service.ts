@@ -1,26 +1,36 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCategoryDto } from './dto/create-category.dto';
+import {
+    CreateCategoryUseCase,
+    ListCategoriesUseCase,
+} from '@fc/micro-videos/category/application';
+
+import { Inject, Injectable } from '@nestjs/common';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Injectable()
 export class CategoriesService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
-  }
+    @Inject(CreateCategoryUseCase.UseCase)
+    private createUseCase: CreateCategoryUseCase.UseCase;
 
-  findAll() {
-    return `This action returns all categories`;
-  }
+    @Inject(ListCategoriesUseCase.UseCase)
+    private listUseCase: ListCategoriesUseCase.UseCase;
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
-  }
+    create(createCategoryDto: CreateCategoryUseCase.Input) {
+        return this.createUseCase.execute(createCategoryDto);
+    }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
-  }
+    search(input: ListCategoriesUseCase.Input) {
+        return this.listUseCase.execute(input);
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
-  }
+    findOne(id: number) {
+        return `This action returns a #${id} category`;
+    }
+
+    update(id: number, updateCategoryDto: UpdateCategoryDto) {
+        return `This action updates a #${id} category`;
+    }
+
+    remove(id: number) {
+        return `This action removes a #${id} category`;
+    }
 }
