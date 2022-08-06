@@ -6,6 +6,7 @@ import {
     GetCategoryUseCase,
     ListCategoriesUseCase,
     UpdateCategoryUseCase,
+    DeleteCategoryUseCase,
 } from '@fc/micro-videos/category/application';
 import { CategoryInMemoryRepository } from '@fc/micro-videos/category/infra';
 import CategoryRepository from '@fc/micro-videos/dist/category/domain/repository/category.repository';
@@ -46,6 +47,13 @@ import CategoryRepository from '@fc/micro-videos/dist/category/domain/repository
             },
             inject: ['CategoryInMemoryRepository'],
         },
+        {
+            provide: DeleteCategoryUseCase.UseCase,
+            useFactory: (categoryRepo: CategoryRepository.Repository) => {
+                return new DeleteCategoryUseCase.UseCase(categoryRepo);
+            },
+            inject: ['CategoryInMemoryRepository'],
+        },        
     ],
 })
 export class CategoriesModule {}
