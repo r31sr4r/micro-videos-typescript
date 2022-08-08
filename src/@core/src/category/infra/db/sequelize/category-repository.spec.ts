@@ -6,7 +6,7 @@ import CategorySequelizeRepository from './category-repository';
 
 describe('CategoryRepository Unit Tests', () => {
 	let sequelize: Sequelize;
-    let repository: CategorySequelizeRepository;
+	let repository: CategorySequelizeRepository;
 
 	beforeAll(async () => {
 		sequelize = new Sequelize({
@@ -18,7 +18,7 @@ describe('CategoryRepository Unit Tests', () => {
 	});
 
 	beforeEach(async () => {
-        repository = new CategorySequelizeRepository(CategoryModel);
+		repository = new CategorySequelizeRepository(CategoryModel);
 		await sequelize.sync({ force: true });
 	});
 
@@ -29,32 +29,32 @@ describe('CategoryRepository Unit Tests', () => {
 	it('should insert a category', async () => {
 		let category = new Category({
 			name: 'Category 1',
-			description: 'Description 1'
+			description: 'Description 1',
 		});
-        await repository.insert(category);
-        let model = await CategoryModel.findByPk(category.id);
-        expect(model.toJSON()).toStrictEqual(category.toJSON());    
-        
-        category = new Category({
-            name: 'Category 2',
-            description: 'Description 2',
-            is_active: false
-        });
+		await repository.insert(category);
+		let model = await CategoryModel.findByPk(category.id);
+		expect(model.toJSON()).toStrictEqual(category.toJSON());
 
-        await repository.insert(category);
-        model = await CategoryModel.findByPk(category.id);
-        expect(model.toJSON()).toStrictEqual(category.toJSON());
+		category = new Category({
+			name: 'Category 2',
+			description: 'Description 2',
+			is_active: false,
+		});
 
-        category = new Category({
-            name: 'Category 3',
-        });
+		await repository.insert(category);
+		model = await CategoryModel.findByPk(category.id);
+		expect(model.toJSON()).toStrictEqual(category.toJSON());
 
-        await repository.insert(category);
-        model = await CategoryModel.findByPk(category.id);
-        expect(model.toJSON()).toStrictEqual(category.toJSON());
+		category = new Category({
+			name: 'Category 3',
+		});
+
+		await repository.insert(category);
+		model = await CategoryModel.findByPk(category.id);
+		expect(model.toJSON()).toStrictEqual(category.toJSON());
 	});
 
-    it('should throw an error when entity has not been found', async () => {
+	it('should throw an error when entity has not been found', async () => {
 		await expect(repository.findById('fake id')).rejects.toThrow(
 			new NotFoundError('Entity not found using ID fake id')
 		);
@@ -67,8 +67,11 @@ describe('CategoryRepository Unit Tests', () => {
 		);
 	});
 
-    it('should find an entity by Id', async () => {
-		const entity = new Category({ name: 'some name', description: 'some description' });
+	it('should find an entity by Id', async () => {
+		const entity = new Category({
+			name: 'some name',
+			description: 'some description',
+		});
 		await repository.insert(entity);
 
 		let entityFound = await repository.findById(entity.id);
@@ -78,4 +81,21 @@ describe('CategoryRepository Unit Tests', () => {
 		expect(entity.toJSON()).toStrictEqual(entityFound.toJSON());
 	});
 
+	it('should return all entities', async () => {
+		const entity1 = new Category({
+			name: 'some name',
+			description: 'some description',
+		});
+		const entity2 = new Category({
+			name: 'some name 2',
+			description: 'some description 2',
+		});
+		await repository.insert(entity1);
+		await repository.insert(entity2);
+
+		const entities = await repository.findAll();
+		expect(entities.length).toBe(2);
+		expect(entities[0].toJSON()).toStrictEqual(entity1.toJSON());
+		expect(entities[1].toJSON()).toStrictEqual(entity2.toJSON());
+	});
 });
