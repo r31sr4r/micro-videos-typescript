@@ -56,7 +56,7 @@ export class CategorySequelizeRepository
 				}),
 				...(props.sort && this.sortableFields.includes(props.sort)
 					? { order: [[props.sort, props.sort_dir]] }
-					: { order: [['name', 'ASC']] }),
+					: { order: [['created_at', 'DESC']] }),
 				offset,
 				limit,
 			});
