@@ -1,29 +1,15 @@
 import { Category } from '#category/domain';
 import { NotFoundError } from '#seedwork/domain';
-import { Sequelize } from 'sequelize-typescript';
+import { setupSequelize } from '#seedwork/infra/testing/helpers/db';
 import { CategoryModel } from './category-model';
 import CategorySequelizeRepository from './category-repository';
 
 describe('CategoryRepository Unit Tests', () => {
-	let sequelize: Sequelize;
+	setupSequelize({models: [CategoryModel]});
 	let repository: CategorySequelizeRepository;
-
-	beforeAll(async () => {
-		sequelize = new Sequelize({
-			dialect: 'sqlite',
-			host: ':memory:',
-			logging: false,
-			models: [CategoryModel],
-		});
-	});
 
 	beforeEach(async () => {
 		repository = new CategorySequelizeRepository(CategoryModel);
-		await sequelize.sync({ force: true });
-	});
-
-	afterAll(async () => {
-		await sequelize.close();
 	});
 
 	it('should insert a category', async () => {

@@ -1,28 +1,12 @@
 import { LoadEntityError, UniqueEntityId } from '#seedwork/domain';
-import { Sequelize } from 'sequelize-typescript';
 import CategoryModelMapper from './category-mapper';
 import { CategoryModel } from './category-model';
 import { Category } from '#category/domain';
+import { setupSequelize } from '#seedwork/infra/testing/helpers/db';
 
 describe('CategoryMapper Unit Tests', () => {
-	let sequelize: Sequelize;
 
-	beforeAll(async () => {
-		sequelize = new Sequelize({
-			dialect: 'sqlite',
-			host: ':memory:',
-			logging: false,
-			models: [CategoryModel],
-		});
-	});
-
-	beforeEach(async () => {
-		await sequelize.sync({ force: true });
-	});
-
-	afterAll(async () => {
-		await sequelize.close();
-	});
+	setupSequelize({models: [CategoryModel]});
 
 	it('should throw an error when entity is invalid', async () => {
 		const model = CategoryModel.build({
