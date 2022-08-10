@@ -6,14 +6,11 @@ import CategorySequelizeRepository from './category-repository';
 import _chance from 'chance';
 import CategoryModelMapper from './category-mapper';
 
+const chance = _chance();
+
 describe('CategoryRepository Unit Tests', () => {
 	setupSequelize({ models: [CategoryModel] });
-	let chance: Chance.Chance;
 	let repository: CategorySequelizeRepository;
-
-	beforeAll(() => {
-		chance = _chance();
-	});
 
 	beforeEach(async () => {
 		repository = new CategorySequelizeRepository(CategoryModel);
@@ -328,7 +325,7 @@ describe('CategoryRepository Unit Tests', () => {
 			}
 		});
 
-		it('should apply paginate, sort and filter', async () => {
+		describe('should apply paginate, sort and filter', () => {
 			const defaultProps = {
 				description: null,
 				is_active: true,
@@ -363,9 +360,7 @@ describe('CategoryRepository Unit Tests', () => {
 				},
 			];
 
-			const categories = await CategoryModel.bulkCreate(categoriesProps);
-
-			const arrange = [
+			let arrange = [
 				{
 					params: new CategoryRepository.SearchParams({
 						page: 1,
@@ -375,8 +370,8 @@ describe('CategoryRepository Unit Tests', () => {
 					}),
 					result: new CategoryRepository.SearchResult({
 						items: [
-							CategoryModelMapper.toEntity(categories[0]),
-							CategoryModelMapper.toEntity(categories[2]),
+							new Category(categoriesProps[0]),
+							new Category(categoriesProps[2]),
 						],
 						total: 3,
 						current_page: 1,
@@ -394,7 +389,7 @@ describe('CategoryRepository Unit Tests', () => {
 						filter: 'some',
 					}),
 					result: new CategoryRepository.SearchResult({
-						items: [CategoryModelMapper.toEntity(categories[4])],
+						items: [new Category(categoriesProps[4])],
 						total: 3,
 						current_page: 2,
 						per_page: 2,
@@ -413,8 +408,8 @@ describe('CategoryRepository Unit Tests', () => {
 					}),
 					result: new CategoryRepository.SearchResult({
 						items: [
-							CategoryModelMapper.toEntity(categories[4]),
-							CategoryModelMapper.toEntity(categories[2]),
+							new Category(categoriesProps[4]),
+							new Category(categoriesProps[2]),
 						],
 						total: 3,
 						current_page: 1,
@@ -426,12 +421,21 @@ describe('CategoryRepository Unit Tests', () => {
 				},
 			];
 
-			for (const i of arrange) {
-				let result = await repository.search(i.params);
-				expect(result.toJSON(true)).toMatchObject(
-					i.result.toJSON(true)
+			beforeEach(async () => {
+				await CategoryModel.bulkCreate(
+					categoriesProps
 				);
-			}
+			});
+
+			test.each(arrange)(
+				'when value is $params',
+				async ({ params, result }) => {
+					let resultList = await repository.search(params);
+					expect(resultList.toJSON(true)).toMatchObject(
+						result.toJSON(true)
+					);
+				}
+			);
 		});
 	});
 });
