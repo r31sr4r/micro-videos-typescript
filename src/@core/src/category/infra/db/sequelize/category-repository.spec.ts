@@ -129,25 +129,94 @@ describe('CategoryRepository Unit Tests', () => {
 			});
 		});
 
-		it('should order by created_at DESC when search params are not provided', async () => {	
+		it('should order by created_at DESC when search params are not provided', async () => {
 			const created_at = new Date();
 			await CategoryModel.factory()
-			.count(16)
-			.bulkCreate((index) => ({
-				id: chance.guid({ version: 4 }),
-				name: `name ${index}`,
-				description: null,
-				is_active: chance.bool(),
-				created_at: new Date(created_at.getTime() + 100 + index),
-			}));
+				.count(16)
+				.bulkCreate((index) => ({
+					id: chance.guid({ version: 4 }),
+					name: `name ${index}`,
+					description: null,
+					is_active: chance.bool(),
+					created_at: new Date(created_at.getTime() + 100 + index),
+				}));
 
 			const searchOutput = await repository.search(
 				new CategoryRepository.SearchParams()
-			);		
-			
+			);
+
 			searchOutput.items.forEach((item, index) => {
 				expect(item.name).toBe(`name ${15 - index}`);
-			} );
+			});
+		});
+
+		it('should apply paginate and filter', async () => {
+			const defaultProps = {
+				description: null,
+				is_active: true,
+				created_at: new Date(),
+			};
+
+			const categoriesProp = [
+				{
+					id: chance.guid({ version: 4 }),
+					name: 'test',
+					...defaultProps,
+				},
+				{ id: chance.guid({ version: 4 }), name: 'a', ...defaultProps },
+				{
+					id: chance.guid({ version: 4 }),
+					name: 'TEST',
+					...defaultProps,
+				},
+				{
+					id: chance.guid({ version: 4 }),
+					name: 'TeSt',
+					...defaultProps,
+				},
+			];
+			const categories = await CategoryModel.bulkCreate(categoriesProp);
+
+			let searchOutput = await repository.search(
+				new CategoryRepository.SearchParams({
+					page: 1,
+					per_page: 2,
+					filter: 'TEST',
+				})
+			);
+			expect(searchOutput.toJSON(true)).toMatchObject(
+				new CategoryRepository.SearchResult({
+					items: [
+						CategoryModelMapper.toEntity(categories[0]),
+						CategoryModelMapper.toEntity(categories[2]),
+					],
+					total: 3,
+					current_page: 1,
+					per_page: 2,
+					sort: null,
+					sort_dir: null,
+					filter: 'TEST',
+				}).toJSON(true)
+			);
+
+			searchOutput = await repository.search(
+				new CategoryRepository.SearchParams({
+					page: 2,
+					per_page: 2,
+					filter: 'TEST',
+				})
+			);
+			expect(searchOutput.toJSON(true)).toMatchObject(
+				new CategoryRepository.SearchResult({
+					items: [CategoryModelMapper.toEntity(categories[3])],
+					total: 3,
+					current_page: 2,
+					per_page: 2,
+					sort: null,
+					sort_dir: null,
+					filter: 'TEST',
+				}).toJSON(true)
+			);
 		});
 	});
 });

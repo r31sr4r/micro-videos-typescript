@@ -6,7 +6,7 @@ import {
     UpdateCategoryUseCase,
 } from '@fc/micro-videos/category/application';
 import { CategoryRepository } from '@fc/micro-videos/category/domain';
-import { CategoryInMemoryRepository } from '@fc/micro-videos/category/infra';
+import { CategoryInMemoryRepository } from '@fc/micro-videos/dist/category/infra/db/in-memory';
 
 export namespace CATEGORY_PROVIDERS {
     export namespace REPOSITORIES {
