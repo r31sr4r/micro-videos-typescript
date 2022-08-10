@@ -1,12 +1,18 @@
-import { Category } from '#category/domain';
+import { Category, CategoryRepository } from '#category/domain';
 import { NotFoundError } from '#seedwork/domain';
 import { setupSequelize } from '#seedwork/infra/testing/helpers/db';
 import { CategoryModel } from './category-model';
 import CategorySequelizeRepository from './category-repository';
+import _chance from 'chance';
 
 describe('CategoryRepository Unit Tests', () => {
-	setupSequelize({models: [CategoryModel]});
+	setupSequelize({ models: [CategoryModel] });
+	let chance: Chance.Chance;
 	let repository: CategorySequelizeRepository;
+
+	beforeAll(() => {
+		chance = _chance();
+	});
 
 	beforeEach(async () => {
 		repository = new CategorySequelizeRepository(CategoryModel);
@@ -83,5 +89,41 @@ describe('CategoryRepository Unit Tests', () => {
 		expect(entities.length).toBe(2);
 		expect(entities[0].toJSON()).toStrictEqual(entity1.toJSON());
 		expect(entities[1].toJSON()).toStrictEqual(entity2.toJSON());
+	});
+
+	describe('search method tests', () => {
+		it('should apply only paginate when other params are not provided', async () => {
+			await CategoryModel.factory()
+				.count(16)
+				.bulkCreate(() => ({
+					id: chance.guid({ version: 4 }),
+					name: chance.word(),
+					description: null,
+					is_active: chance.bool(),
+					created_at: chance.date(),
+				}));
+
+			const searchOutput = await repository.search(
+				new CategoryRepository.SearchParams()
+			);
+
+			expect(searchOutput).toBeInstanceOf(
+				CategoryRepository.SearchResult
+			);
+			expect(searchOutput.toJSON()).toMatchObject({
+				total: 16,
+				current_page: 1,
+				last_page: 2,
+				per_page: 15,
+				sort: null,
+				sort_dir: null,
+				filter: null,
+			});
+
+			searchOutput.items.forEach((item) => {
+				expect(item).toBeInstanceOf(Category);
+				expect(item.id).toBeDefined();
+			});
+		});
 	});
 });
