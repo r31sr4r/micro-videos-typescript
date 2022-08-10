@@ -36,28 +36,31 @@ describe('CategoryValidator Tests', () => {
 	});
 
 	test('invalidation cases for description field', () => {
-		expect({ validator, data: { name: 'some name', description: 5 as any } }).containsErrorMessages({
-			description: [
-				'description must be a string',
-			],
+		expect({
+			validator,
+			data: { name: 'some name', description: 5 as any },
+		}).containsErrorMessages({
+			description: ['description must be a string'],
 		});
 	});
 
 	test('invalidation cases for is_active field', () => {
-		expect({ validator, data: { name: 'some name', is_active: 5 as any } }).containsErrorMessages({
-			is_active: [
-				'is_active must be a boolean value',
-			],
+		expect({
+			validator,
+			data: { name: 'some name', is_active: 5 as any },
+		}).containsErrorMessages({
+			is_active: ['is_active must be a boolean value'],
 		});
 
-		expect({ validator, data: { name: 'some name', is_active: 'true' } }).containsErrorMessages({
-			is_active: [
-				'is_active must be a boolean value',
-			],
-		});		
+		expect({
+			validator,
+			data: { name: 'some name', is_active: 'true' },
+		}).containsErrorMessages({
+			is_active: ['is_active must be a boolean value'],
+		});
 	});
 
-	test('valid cases for fields', () => {
+	describe('valid cases for fields', () => {
 		const arrange = [
 			{ name: 'some value' },
 			{ name: 'some value', description: 'some description' },
@@ -69,13 +72,17 @@ describe('CategoryValidator Tests', () => {
 			},
 		];
 
-		arrange.forEach((item) => {
-			const isValid = validator.validate(item);
-			expect(isValid).toBe(true);
-			expect(validator.errors).toBeNull();
-			expect(validator.validatedData).toStrictEqual(
-				new CategoryRules(item)
-			);
-		});
+		test.each(arrange)(
+			'validates %p',
+			(item) => {
+				const isValid = validator.validate(item);
+				expect(isValid).toBe(true);
+				expect(validator.errors).toBeNull();
+				expect(validator.validatedData).toStrictEqual(
+					new CategoryRules(item)
+				);
+			}
+		);
+
 	});
 });

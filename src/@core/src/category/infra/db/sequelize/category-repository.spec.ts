@@ -218,5 +218,220 @@ describe('CategoryRepository Unit Tests', () => {
 				}).toJSON(true)
 			);
 		});
+
+		it('should apply paginate and sort', async () => {
+			expect(repository.sortableFields).toStrictEqual([
+				'name',
+				'created_at',
+			]);
+			const defaultProps = {
+				description: null,
+				is_active: true,
+				created_at: new Date(),
+			};
+
+			const categoriesProp = [
+				{ id: chance.guid({ version: 4 }), name: 'b', ...defaultProps },
+				{ id: chance.guid({ version: 4 }), name: 'a', ...defaultProps },
+				{ id: chance.guid({ version: 4 }), name: 'd', ...defaultProps },
+				{ id: chance.guid({ version: 4 }), name: 'e', ...defaultProps },
+				{ id: chance.guid({ version: 4 }), name: 'c', ...defaultProps },
+			];
+			const categories = await CategoryModel.bulkCreate(categoriesProp);
+
+			const arrange = [
+				{
+					params: new CategoryRepository.SearchParams({
+						page: 1,
+						per_page: 2,
+						sort: 'name',
+					}),
+					result: new CategoryRepository.SearchResult({
+						items: [
+							CategoryModelMapper.toEntity(categories[1]),
+							CategoryModelMapper.toEntity(categories[0]),
+						],
+						total: 5,
+						current_page: 1,
+						per_page: 2,
+						sort: 'name',
+						sort_dir: 'asc',
+						filter: null,
+					}),
+				},
+				{
+					params: new CategoryRepository.SearchParams({
+						page: 2,
+						per_page: 2,
+						sort: 'name',
+					}),
+					result: new CategoryRepository.SearchResult({
+						items: [
+							CategoryModelMapper.toEntity(categories[4]),
+							CategoryModelMapper.toEntity(categories[2]),
+						],
+						total: 5,
+						current_page: 2,
+						per_page: 2,
+						sort: 'name',
+						sort_dir: 'asc',
+						filter: null,
+					}),
+				},
+				{
+					params: new CategoryRepository.SearchParams({
+						page: 1,
+						per_page: 2,
+						sort: 'name',
+						sort_dir: 'desc',
+					}),
+					result: new CategoryRepository.SearchResult({
+						items: [
+							CategoryModelMapper.toEntity(categories[3]),
+							CategoryModelMapper.toEntity(categories[2]),
+						],
+						total: 5,
+						current_page: 1,
+						per_page: 2,
+						sort: 'name',
+						sort_dir: 'desc',
+						filter: null,
+					}),
+				},
+				{
+					params: new CategoryRepository.SearchParams({
+						page: 2,
+						per_page: 2,
+						sort: 'name',
+						sort_dir: 'desc',
+					}),
+					result: new CategoryRepository.SearchResult({
+						items: [
+							CategoryModelMapper.toEntity(categories[4]),
+							CategoryModelMapper.toEntity(categories[0]),
+						],
+						total: 5,
+						current_page: 2,
+						per_page: 2,
+						sort: 'name',
+						sort_dir: 'desc',
+						filter: null,
+					}),
+				},
+			];
+
+			for (const i of arrange) {
+				let result = await repository.search(i.params);
+				expect(result.toJSON(true)).toMatchObject(
+					i.result.toJSON(true)
+				);
+			}
+		});
+
+		it('should apply paginate, sort and filter', async () => {
+			const defaultProps = {
+				description: null,
+				is_active: true,
+				created_at: new Date(),
+			};
+
+			const categoriesProps = [
+				{
+					id: chance.guid({ version: 4 }),
+					name: 'some name',
+					...defaultProps,
+				},
+				{
+					id: chance.guid({ version: 4 }),
+					name: 'other name',
+					...defaultProps,
+				},
+				{
+					id: chance.guid({ version: 4 }),
+					name: 'some other name',
+					...defaultProps,
+				},
+				{
+					id: chance.guid({ version: 4 }),
+					name: 'name',
+					...defaultProps,
+				},
+				{
+					id: chance.guid({ version: 4 }),
+					name: 'some test',
+					...defaultProps,
+				},
+			];
+
+			const categories = await CategoryModel.bulkCreate(categoriesProps);
+
+			const arrange = [
+				{
+					params: new CategoryRepository.SearchParams({
+						page: 1,
+						per_page: 2,
+						sort: 'name',
+						filter: 'some',
+					}),
+					result: new CategoryRepository.SearchResult({
+						items: [
+							CategoryModelMapper.toEntity(categories[0]),
+							CategoryModelMapper.toEntity(categories[2]),
+						],
+						total: 3,
+						current_page: 1,
+						per_page: 2,
+						sort: 'name',
+						sort_dir: 'asc',
+						filter: 'some',
+					}),
+				},
+				{
+					params: new CategoryRepository.SearchParams({
+						page: 2,
+						per_page: 2,
+						sort: 'name',
+						filter: 'some',
+					}),
+					result: new CategoryRepository.SearchResult({
+						items: [CategoryModelMapper.toEntity(categories[4])],
+						total: 3,
+						current_page: 2,
+						per_page: 2,
+						sort: 'name',
+						sort_dir: 'asc',
+						filter: 'some',
+					}),
+				},
+				{
+					params: new CategoryRepository.SearchParams({
+						page: 1,
+						per_page: 2,
+						sort: 'name',
+						sort_dir: 'desc',
+						filter: 'some',
+					}),
+					result: new CategoryRepository.SearchResult({
+						items: [
+							CategoryModelMapper.toEntity(categories[4]),
+							CategoryModelMapper.toEntity(categories[2]),
+						],
+						total: 3,
+						current_page: 1,
+						per_page: 2,
+						sort: 'name',
+						sort_dir: 'desc',
+						filter: 'some',
+					}),
+				},
+			];
+
+			for (const i of arrange) {
+				let result = await repository.search(i.params);
+				expect(result.toJSON(true)).toMatchObject(
+					i.result.toJSON(true)
+				);
+			}
+		});
 	});
 });
