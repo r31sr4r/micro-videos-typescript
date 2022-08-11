@@ -34,6 +34,7 @@
 	"scripts": {
 		"prestart:dev": "npm run build -w @fc/micro-videos",
 		"start:dev": "npm run build:w -w @fc/micro-videos & npm run start:dev -w nestjs",
+		"pretest": "npm run build -w @fc/micro-videos",
 		"test": "jest"
 	},
 	"repository": {
