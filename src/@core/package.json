@@ -39,6 +39,7 @@
 	"dependencies": {
 		"chance": "^1.1.8",
 		"class-validator": "^0.13.2",
+		"dotenv": "^16.0.1",
 		"jest": "^27.5.1",
 		"nvm": "^0.0.4",
 		"sequelize": "^6.21.3",
