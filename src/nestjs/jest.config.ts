@@ -26,4 +26,7 @@ export default {
     '#category/(.*)$':
       '<rootDir>/../../../node_modules/@fc/micro-videos/dist/category/$1',
   },
+  setupFilesAfterEnv: [
+		'../../@core/src/@seedwork/domain/tests/jest.ts',
+	],
 };
