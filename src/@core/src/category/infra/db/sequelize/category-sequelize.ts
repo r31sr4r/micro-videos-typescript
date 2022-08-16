@@ -6,7 +6,7 @@ import {
 	Model,
 } from 'sequelize-typescript';
 import { SequelizeModelFactory } from '../../../../@seedwork/infra/sequelize/sequelize-model-factory';
-import { Category, CategoryRepository } from '#category/domain';
+import { Category, CategoryRepository } from '#category/domain/index';
 import { Op } from 'sequelize';
 import {
 	NotFoundError,

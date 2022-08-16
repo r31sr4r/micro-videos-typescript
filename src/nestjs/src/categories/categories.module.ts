@@ -7,7 +7,7 @@ import { CATEGORY_PROVIDERS } from './category.providers';
     controllers: [CategoriesController],
     providers: [
         CategoriesService,
-        ...Object.values(CATEGORY_PROVIDERS.USE_CASES),
+        ...Object.values(CATEGORY_PROVIDERS.REPOSITORIES),
         ...Object.values(CATEGORY_PROVIDERS.USE_CASES)
     ],
 })
