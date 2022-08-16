@@ -2,7 +2,7 @@ GET http://localhost:3000/categories
 
 ###
 
-GET http://localhost:3000/categories/38726569-acd0-4f04-839d-485d7e417348
+GET http://localhost:3000/categories/dc803284-f8c8-40fb-89d1-971fe36c0e28
 
 
 ###
@@ -11,12 +11,12 @@ POST http://localhost:3000/categories
 Content-Type: application/json
 
 {
-    "name": "Movie"
+    "name": "Movie 2"
 }
 
 ###
 
-PUT http://localhost:3000/categories/38726569-acd0-4f04-839d-485d7e417348
+PUT http://localhost:3000/categories/dc803284-f8c8-40fb-89d1-971fe36c0e28
 Content-Type: application/json
 
 {
