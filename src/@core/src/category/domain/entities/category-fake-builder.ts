@@ -3,7 +3,7 @@ import { Chance } from 'chance';
 
 type PropOrFactory<T> = T | ((index) => T);
 
-class CategoryFakeBuilder<TBuild = any> {
+export class CategoryFakeBuilder<TBuild = any> {
 	private chance: Chance.Chance;
 	private name: PropOrFactory<string> = (_index) => this.chance.word();
 	private description: PropOrFactory<string | null> = (_index) =>
@@ -20,8 +20,8 @@ class CategoryFakeBuilder<TBuild = any> {
 		return new CategoryFakeBuilder<Category>();
 	}
 
-	static theCategories() {
-		return new CategoryFakeBuilder<Category[]>();
+	static theCategories(countObjs: number) {
+		return new CategoryFakeBuilder<Category[]>(countObjs);
 	}
 
 	withName(name: PropOrFactory<string>) {
@@ -45,39 +45,20 @@ class CategoryFakeBuilder<TBuild = any> {
 	}
 
 	build(): TBuild {
-		if (this.countObjs === 1) {
-			return new Category({
-				name: typeof this.name === 'function' ? this.name() : this.name,
-				description:
-					typeof this.description === 'function'
-						? this.description()
-						: this.description,
-				is_active:
-					typeof this.is_active === 'function'
-						? this.is_active()
-						: this.is_active,
-			});
-		} else {
-			const categories = [];
-			for (let i = 0; i < this.countObjs; i++) {
-				categories.push(
-					new Category({
-						name:
-							typeof this.name === 'function'
-								? this.name(i)
-								: this.name,
-						description:
-							typeof this.description === 'function'
-								? this.description(i)
-								: this.description,
-						is_active:
-							typeof this.is_active === 'function'
-								? this.is_active(i)
-								: this.is_active,
-					})
-				);
-			}
-			return categories;
-		}
+		const categories = new Array(this.countObjs).fill(undefined).map(
+			(_, index) =>
+				new Category({
+					name: this.callFactory(this.name, index),
+					description: this.callFactory(this.description, index),
+					is_active: this.callFactory(this.is_active, index),
+				})
+		);
+		return this.countObjs === 1 ? categories[0] as any : categories;
+	}
+
+	private callFactory(factoryOrValue: PropOrFactory<any>, index: number) {
+		return typeof factoryOrValue === 'function'
+			? factoryOrValue(index)
+			: factoryOrValue;
 	}
 }
