@@ -3,21 +3,31 @@ import { Chance } from 'chance';
 import { CategoryFakeBuilder } from '../category-fake-builder';
 
 describe('Category Fake Builder Unit Tests', () => {
-
 	describe('unique_entity_id property', () => {
 		const faker = CategoryFakeBuilder.aCategory();
-		it('should be undefined by default', () => {		
-			expect(faker['unique_entity_id']).toBeUndefined();
+
+		it('should throw error when any with methodos has called', () => {
+			expect(() => faker['getValue']('unique_entity_id')).toThrow(
+				new Error(
+					`Property unique_entity_id not has value. Use 'with' method to set value`
+				)
+			);
+		});
+
+		it('should be undefined by default', () => {
+			expect(faker['_unique_entity_id']).toBeUndefined();
 		});
 
 		test('withUniqueEntityID', () => {
 			const uniqueEntityId = new UniqueEntityId();
 			const $this = faker.withUniqueEntityId(uniqueEntityId);
 			expect($this).toBeInstanceOf(CategoryFakeBuilder);
-			expect(faker['unique_entity_id']).toBe(uniqueEntityId);
+			expect(faker['_unique_entity_id']).toBe(uniqueEntityId);
 
 			faker.withUniqueEntityId(() => uniqueEntityId);
-			expect(faker['unique_entity_id']()).toBe(uniqueEntityId);
+			expect(faker['_unique_entity_id']()).toBe(uniqueEntityId);
+
+			expect(faker.unique_entity_id).toBe(uniqueEntityId);
 		});
 
 		it('should pass index to unique_entity_id factory', () => {
@@ -40,7 +50,7 @@ describe('Category Fake Builder Unit Tests', () => {
 		const faker = CategoryFakeBuilder.aCategory();
 
 		it('should be a function', () => {
-			expect(typeof faker['name'] === 'function').toBeTruthy();
+			expect(typeof faker['_name'] === 'function').toBeTruthy();
 		});
 
 		it('should call word method of Chance', () => {
@@ -56,44 +66,46 @@ describe('Category Fake Builder Unit Tests', () => {
 		test('with name', () => {
 			const $this = faker.withName('some name');
 			expect($this).toBeInstanceOf(CategoryFakeBuilder);
-			expect(faker['name']).toBe('some name');
+			expect(faker['_name']).toBe('some name');
 
 			faker.withName('Movie');
-			expect(faker['name']).toBe('Movie');
+			expect(faker['_name']).toBe('Movie');
 
 			faker.withName(() => 'Movie');
 			//@ts-expect-error name is callable
-			expect(faker['name']()).toBe('Movie');
+			expect(faker['_name']()).toBe('Movie');
+
+			expect(faker.name).toBe('Movie');
 		});
 
 		test('with empty case', () => {
 			faker.withInvalidNameEmpty(undefined);
-			expect(faker['name']).toBeUndefined();
+			expect(faker['_name']).toBeUndefined();
 
 			faker.withInvalidNameEmpty(null);
-			expect(faker['name']).toBeNull();
+			expect(faker['_name']).toBeNull();
 
 			faker.withInvalidNameEmpty('');
-			expect(faker['name']).toBe('');
+			expect(faker['_name']).toBe('');
 		});
 
 		test('with not a string case', () => {
 			faker.withInvalidNameNotAStr(5);
-			expect(faker['name']).toBe(5);
+			expect(faker['_name']).toBe(5);
 
 			faker.withInvalidNameNotAStr({});
-			expect(faker['name']).toEqual({});
+			expect(faker['_name']).toEqual({});
 
 			faker.withInvalidNameNotAStr(null);
-			expect(faker['name']).toBe(5);
+			expect(faker['_name']).toBe(5);
 		});
 
 		test('with too long case', () => {
 			faker.withInvalidNameTooLong('a'.repeat(256));
-			expect(faker['name']).toBe('a'.repeat(256));
+			expect(faker['_name']).toBe('a'.repeat(256));
 
 			faker.withInvalidNameTooLong(null);
-			expect(faker['name']).toHaveLength(256);
+			expect(faker['_name']).toHaveLength(256);
 		});
 
 		it('should pass index to name factory', () => {
@@ -114,7 +126,7 @@ describe('Category Fake Builder Unit Tests', () => {
 	describe('description property', () => {
 		const faker = CategoryFakeBuilder.aCategory();
 		it('should be a function', () => {
-			expect(typeof faker['description'] === 'function').toBeTruthy();
+			expect(typeof faker['_description'] === 'function').toBeTruthy();
 		});
 
 		it('should call paragraph method of Chance', () => {
@@ -129,22 +141,24 @@ describe('Category Fake Builder Unit Tests', () => {
 
 		test('with description', () => {
 			faker.withDescription('Movie');
-			expect(faker['description']).toBe('Movie');
+			expect(faker['_description']).toBe('Movie');
 
 			faker.withDescription(() => 'Movie');
 			//@ts-expect-error description is callable
-			expect(faker['description']()).toBe('Movie');
+			expect(faker['_description']()).toBe('Movie');
+
+			expect(faker.description).toBe('Movie');
 		});
 
 		test('with not a string case', () => {
 			faker.withInvalidDescriptionNotAStr(5);
-			expect(faker['description']).toBe(5);
+			expect(faker['_description']).toBe(5);
 
 			faker.withInvalidDescriptionNotAStr({});
-			expect(faker['description']).toEqual({});
+			expect(faker['_description']).toEqual({});
 
 			faker.withInvalidDescriptionNotAStr(null);
-			expect(faker['description']).toBe(5);
+			expect(faker['_description']).toBe(5);
 		});
 
 		it('should pass index to description factory', () => {
@@ -165,69 +179,84 @@ describe('Category Fake Builder Unit Tests', () => {
 	describe('is_active property', () => {
 		const faker = CategoryFakeBuilder.aCategory();
 		it('should be a function', () => {
-			expect(typeof faker['is_active'] === 'function').toBeTruthy();
+			expect(typeof faker['_is_active'] === 'function').toBeTruthy();
 		});
 
 		test('activate', () => {
 			faker.activate();
-			expect(faker['is_active']).toBe(true);
+			expect(faker['_is_active']).toBe(true);
+			expect(faker.is_active).toBe(true);
 		});
 
 		test('deactivate', () => {
 			faker.deactivate();
-			expect(faker['is_active']).toBe(false);
+			expect(faker['_is_active']).toBe(false);
+			expect(faker.is_active).toBe(false);
 		});
 
 		test('with not a boolean case', () => {
 			faker.withInvalidIsActiveNotABool(5);
-			expect(faker['is_active']).toBe(5);
+			expect(faker['_is_active']).toBe(5);
 
 			faker.withInvalidIsActiveNotABool({});
-			expect(faker['is_active']).toEqual({});
+			expect(faker['_is_active']).toEqual({});
 
 			faker.withInvalidIsActiveNotABool(null);
-			expect(faker['is_active']).toBe(5);
+			expect(faker['_is_active']).toBe(5);
 		});
 
 		test('with a empty case', () => {
 			faker.withInvalidIsActiveEmpty(undefined);
-			expect(faker['is_active']).toBeUndefined();
+			expect(faker['_is_active']).toBeUndefined();
 
 			faker.withInvalidIsActiveEmpty(null);
-			expect(faker['is_active']).toBeNull();
+			expect(faker['_is_active']).toBeNull();
 
 			faker.withInvalidIsActiveEmpty('');
-			expect(faker['is_active']).toBe('');
+			expect(faker['_is_active']).toBe('');
 		});
 	});
 
 	describe('created_at property', () => {
 		const faker = CategoryFakeBuilder.aCategory();
 
+		it('should throw error when any with methodos has called', () => {
+			expect(() => faker['getValue']('created_at')).toThrow(
+				new Error(
+					`Property created_at not has value. Use 'with' method to set value`
+				)
+			);
+		});
+
 		test('withCreatedAt', () => {
 			const date = new Date();
 			const $this = faker.withCreatedAt(date);
 
 			expect($this).toBeInstanceOf(CategoryFakeBuilder);
-			expect(faker['created_at']).toBe(date);
+			expect(faker['_created_at']).toBe(date);
 
 			faker.withCreatedAt(() => date);
-			expect(faker['created_at']()).toBe(date);			
+			expect(faker['_created_at']()).toBe(date);
+
+			expect(faker.build().created_at).toBe(date);
 		});
 
 		it('should pass index to created_at factory', () => {
 			const date = new Date();
-			faker.withCreatedAt((index) => new Date(date.getTime() + index + 2));
+			faker.withCreatedAt(
+				(index) => new Date(date.getTime() + index + 2)
+			);
 			const category = faker.build();
 			expect(category.created_at.getTime()).toBe(date.getTime() + 2);
 
 			const fakerMany = CategoryFakeBuilder.theCategories(2);
-			fakerMany.withCreatedAt((index) => new Date(date.getTime() + index + 2));
+			fakerMany.withCreatedAt(
+				(index) => new Date(date.getTime() + index + 2)
+			);
 			const categories = fakerMany.build();
 
 			expect(categories[0].created_at.getTime()).toBe(date.getTime() + 2);
 			expect(categories[1].created_at.getTime()).toBe(date.getTime() + 3);
 		});
-
 	});
 });

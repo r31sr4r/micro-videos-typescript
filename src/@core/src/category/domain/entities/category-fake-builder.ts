@@ -5,15 +5,16 @@ import { UniqueEntityId } from '#seedwork/domain';
 type PropOrFactory<T> = T | ((index) => T);
 
 export class CategoryFakeBuilder<TBuild = any> {
-	// auto generated in entity
-	private unique_entity_id = undefined;
 	private chance: Chance.Chance;
-	private name: PropOrFactory<string> = (_index) => this.chance.word();
-	private description: PropOrFactory<string | null> = (_index) =>
-		this.chance.paragraph();
-	private is_active: PropOrFactory<boolean> = (_index) => true;
+
 	// auto generated in entity
-	private created_at = undefined;
+	private _unique_entity_id = undefined;
+	private _name: PropOrFactory<string> = (_index) => this.chance.word();
+	private _description: PropOrFactory<string | null> = (_index) =>
+		this.chance.paragraph();
+	private _is_active: PropOrFactory<boolean> = (_index) => true;
+	// auto generated in entity
+	private _created_at = undefined;
 	private countObjs = 1;
 
 	constructor(countObjs: number = 1) {
@@ -30,62 +31,62 @@ export class CategoryFakeBuilder<TBuild = any> {
 	}
 
 	withUniqueEntityId(valueOrFactory: PropOrFactory<UniqueEntityId>) {
-		this.unique_entity_id = valueOrFactory;
+		this._unique_entity_id = valueOrFactory;
 		return this;
 	}
 
 	withName(valueOrFactory: PropOrFactory<string>) {
-		this.name = valueOrFactory;
+		this._name = valueOrFactory;
 		return this;
 	}
 
 	withInvalidNameEmpty(value: '' | null | undefined) {
-		this.name = value as any;
+		this._name = value as any;
 		return this;
 	}
 
 	withInvalidNameNotAStr(value: any) {
-		this.name = value ?? 5;
+		this._name = value ?? 5;
 		return this;
 	}
 
 	withInvalidNameTooLong(value: string) {
-		this.name = value ?? this.chance.word({ length: 256 });
+		this._name = value ?? this.chance.word({ length: 256 });
 		return this;
 	}
 
 	withDescription(valueOrFactory: PropOrFactory<string | null>) {
-		this.description = valueOrFactory;
+		this._description = valueOrFactory;
 		return this;
 	}
 
 	withInvalidDescriptionNotAStr(value: any) {
-		this.description = value ?? 5;
+		this._description = value ?? 5;
 		return this;
 	}
 
 	activate() {
-		this.is_active = true;
+		this._is_active = true;
 		return this;
 	}
 
 	deactivate() {
-		this.is_active = false;
+		this._is_active = false;
 		return this;
 	}
 
 	withInvalidIsActiveNotABool(value: any) {
-		this.is_active = value ?? 5;
+		this._is_active = value ?? 5;
 		return this;
 	}
 
 	withInvalidIsActiveEmpty(value: '' | null | undefined) {
-		this.is_active = value as any;
+		this._is_active = value as any;
 		return this;
 	}
 
 	withCreatedAt(valueOrFactory: PropOrFactory<Date>) {
-		this.created_at = valueOrFactory;
+		this._created_at = valueOrFactory;
 		return this;
 	}
 
@@ -93,21 +94,52 @@ export class CategoryFakeBuilder<TBuild = any> {
 		const categories = new Array(this.countObjs).fill(undefined).map(
 			(_, index) =>
 				new Category({
-					...(this.unique_entity_id && {
+					...(this._unique_entity_id && {
 						unique_entity_id: this.callFactory(
-							this.unique_entity_id,
+							this._unique_entity_id,
 							index
 						),
 					}),
-					name: this.callFactory(this.name, index),
-					description: this.callFactory(this.description, index),
-					is_active: this.callFactory(this.is_active, index),
-					...(this.created_at && {
-						created_at: this.callFactory(this.created_at, index),
+					name: this.callFactory(this._name, index),
+					description: this.callFactory(this._description, index),
+					is_active: this.callFactory(this._is_active, index),
+					...(this._created_at && {
+						created_at: this.callFactory(this._created_at, index),
 					}),
 				})
 		);
 		return this.countObjs === 1 ? (categories[0] as any) : categories;
+	}
+
+	get unique_entity_id() {
+		return this.getValue('unique_entity_id');
+	}
+
+	get name(): string {
+		return this.getValue('name');
+	}
+
+	get description(): string | null {
+		return this.getValue('description');
+	}
+
+	get is_active(): boolean {
+		return this.getValue('is_active');
+	}
+
+	get created_at(): Date {
+		return this.getValue('created_at');
+	}
+
+	private getValue(prop) {
+		const optional = ['unique_entity_id', 'created_at'];
+		const privateProp = `_${prop}`;
+		if (!this[privateProp] && optional.includes(prop)) {
+			throw new Error(
+				`Property ${prop} not has value. Use 'with' method to set value`
+			);
+		}
+		return this.callFactory(this[privateProp], 0);
 	}
 
 	private callFactory(factoryOrValue: PropOrFactory<any>, index: number) {
