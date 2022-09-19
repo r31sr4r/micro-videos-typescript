@@ -29,8 +29,28 @@ export class CategoryFakeBuilder<TBuild = any> {
 		return this;
 	}
 
+	withInvalidNameEmpty(value: '' | null | undefined) {
+		this.name = value as any;
+		return this;
+	}
+
+	withInvalidNameNotAStr(value: any) {
+		this.name = value ?? 5;
+		return this;
+	}
+
+	withInvalidNameTooLong(value: string) {
+		this.name = value ?? this.chance.word({ length: 256 });
+		return this;
+	}
+
 	withDescription(description: PropOrFactory<string | null>) {
 		this.description = description;
+		return this;
+	}
+
+	withInvalidDescriptionNotAStr(value: any) {
+		this.description = value ?? 5;
 		return this;
 	}
 
@@ -44,6 +64,16 @@ export class CategoryFakeBuilder<TBuild = any> {
 		return this;
 	}
 
+	withInvalidIsActiveNotABool(value: any) {
+		this.is_active = value ?? 5;
+		return this;
+	}
+
+	withInvalidIsActiveEmpty(value: '' | null | undefined) {
+		this.is_active = value as any;
+		return this;
+	}
+
 	build(): TBuild {
 		const categories = new Array(this.countObjs).fill(undefined).map(
 			(_, index) =>
@@ -53,7 +83,7 @@ export class CategoryFakeBuilder<TBuild = any> {
 					is_active: this.callFactory(this.is_active, index),
 				})
 		);
-		return this.countObjs === 1 ? categories[0] as any : categories;
+		return this.countObjs === 1 ? (categories[0] as any) : categories;
 	}
 
 	private callFactory(factoryOrValue: PropOrFactory<any>, index: number) {
