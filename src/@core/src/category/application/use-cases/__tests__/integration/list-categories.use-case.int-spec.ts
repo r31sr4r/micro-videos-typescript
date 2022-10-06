@@ -1,10 +1,7 @@
 import { ListCategoriesUseCase } from '../../list-categories.use-case';
 import { setupSequelize } from '#seedwork/infra';
 import { CategorySequelize } from '#category/infra/db/sequelize/category-sequelize';
-import _chance from 'chance';
-import { CategoryFakeBuilder } from '#category/domain/entities/category-fake-builder';
-
-const chance = _chance();
+import { Category } from '#category/domain';
 
 const { CategorySequelizeRepository, CategoryModel, CategoryModelMapper } =
 	CategorySequelize;
@@ -21,7 +18,7 @@ describe('ListCategoriesUseCase Integration Tests', () => {
 	});
 
 	it('should return output with four categories ordered by created_at when input is empty', async () => {
-		const faker = CategoryFakeBuilder.theCategories(4);
+		const faker = Category.fake().theCategories(4);
 		const entities = faker
 		.withName(index => `name ${index}`)
 		.withCreatedAt(index => new Date(new Date().getTime() + index))
@@ -43,7 +40,7 @@ describe('ListCategoriesUseCase Integration Tests', () => {
 	});
 
 	it('should return output using paginate, sort and filter', async () => {
-		const faker = CategoryFakeBuilder.aCategory();
+		const faker = Category.fake().aCategory();
 		const entities = [
 			faker.withName('a').build(),
 			faker.withName('AAA').build(),

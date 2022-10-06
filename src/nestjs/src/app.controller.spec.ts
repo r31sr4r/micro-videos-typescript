@@ -19,8 +19,6 @@ describe('AppController', () => {
         const configService: ConfigService = app.get<ConfigService<CONFIG_SCHEMA_TYPE>>(ConfigService);
 
         const db_vendor = configService.get<CONFIG_SCHEMA_TYPE['DB_VENDOR']>('DB_VENDOR');
-
-        console.log(db_vendor);
     });
 
     describe('root', () => {

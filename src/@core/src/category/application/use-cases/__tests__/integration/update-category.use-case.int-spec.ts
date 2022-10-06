@@ -3,7 +3,7 @@ import NotFoundError from '../../../../../@seedwork/domain/errors/not-found.erro
 import { setupSequelize } from '#seedwork/infra';
 import { CategorySequelize } from '#category/infra/db/sequelize/category-sequelize';
 import _chance from 'chance';
-import { CategoryFakeBuilder } from '#category/domain/entities/category-fake-builder';
+import { Category } from '#category/domain';
 
 const chance = _chance();
 
@@ -29,7 +29,7 @@ describe('UpdateCategoryUseCase Integration Tests', () => {
 	});
 
 	it('should update category', async () => {
-		const entity = CategoryFakeBuilder.aCategory().build();
+		const entity = Category.fake().aCategory().build();
 		repository.insert(entity);
 
 		let output = await useCase.execute({ id: entity.id, name: 'Test' });
