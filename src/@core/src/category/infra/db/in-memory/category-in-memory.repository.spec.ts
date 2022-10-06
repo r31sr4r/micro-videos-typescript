@@ -1,4 +1,5 @@
 import { Category } from "#category/domain/entities/category";
+import { CategoryFakeBuilder } from "#category/domain/entities/category-fake-builder";
 import CategoryInMemoryRepository from "./category-in-memory.repository";
 
 describe('CategoryInMemoryRepository Unit Tests', () => {
@@ -10,8 +11,8 @@ describe('CategoryInMemoryRepository Unit Tests', () => {
 
     it('should return items without filter', async () => {
         const items = [
-            new Category({ name: 'Category 1' }), 
-            new Category({ name: 'Category 2' })
+            CategoryFakeBuilder.aCategory().build(),
+            CategoryFakeBuilder.aCategory().build(),            
         ];
 
         const spyFilterMethod = jest.spyOn(items, 'filter' as any);
@@ -22,13 +23,15 @@ describe('CategoryInMemoryRepository Unit Tests', () => {
     });
 
     it('should return filtered items when filter is not null', async () => {
+        const faker = CategoryFakeBuilder.aCategory();
         const items = [ 
-            new Category({ name: 'Category 1' }),
-            new Category({ name: 'Test 2' }),
-            new Category({ name: 'Some Category 3' }),
-            new Category({ name: 'other 4' }),
-            new Category({ name: 'another one 5' }),
-            new Category({ name: 'Category 6' }),
+            faker.withName('Category 1').build(),
+            faker.withName('Test 2').build(),
+            faker.withName('Some Category 3').build(),
+            faker.withName('other 4').build(),
+            faker.withName('another one 5').build(),
+            faker.withName('Category 6').build(),
+
         ];
 
         const spyFilterMethod = jest.spyOn(items, 'filter' as any);

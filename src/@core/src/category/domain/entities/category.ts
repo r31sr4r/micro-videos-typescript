@@ -32,6 +32,7 @@ export class Category extends Entity<CategoryProperties> {
 	static validate(props: CategoryProperties): void {
 		const validator = CategoryValidatorFactory.create();
 		const isValid = validator.validate(props);
+		console.log(validator.errors)
 		if (!isValid) {
 			throw new EntityValidationError(validator.errors);
 		}

@@ -2,7 +2,7 @@ GET http://localhost:3000/categories
 
 ###
 
-GET http://localhost:3000/categories/dc803284-f8c8-40fb-89d1-971fe36c0e28
+GET http://localhost:3000/categories/9b46d94a-895a-48aa-ba61-16e3005bb41c
 
 
 ###
@@ -11,7 +11,10 @@ POST http://localhost:3000/categories
 Content-Type: application/json
 
 {
-    "name": "Movie 2"
+    "id": null,
+    "name": "Fiction 3",
+    "description": "Fiction books"
+
 }
 
 ###
