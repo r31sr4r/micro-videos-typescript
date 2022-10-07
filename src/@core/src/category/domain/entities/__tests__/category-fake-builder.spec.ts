@@ -259,4 +259,66 @@ describe('Category Fake Builder Unit Tests', () => {
 			expect(categories[1].created_at.getTime()).toBe(date.getTime() + 3);
 		});
 	});
+
+	it('should create a category', () => {
+		const faker = CategoryFakeBuilder.aCategory();
+		let category = faker.build();
+
+		expect(category.uniqueEntityId).toBeInstanceOf(UniqueEntityId);
+		expect(typeof category.name === 'string').toBeTruthy();
+		expect(typeof category.description === 'string').toBeTruthy();
+		expect(category.is_active).toBeTruthy();
+		expect(category.created_at).toBeInstanceOf(Date);
+
+		const created_at = new Date();
+		const uniqueEntityId = new UniqueEntityId();
+
+		category = faker
+			.withUniqueEntityId(uniqueEntityId)
+			.withName('Movie')
+			.withDescription('Some description')
+			.deactivate()
+			.withCreatedAt(created_at)
+			.build();
+
+		expect(category.uniqueEntityId.value).toBe(uniqueEntityId.value);
+		expect(category.name).toBe('Movie');
+		expect(category.description).toBe('Some description');
+		expect(category.is_active).toBeFalsy();
+		expect(category.created_at).toBe(created_at);
+	});
+
+	it('should create many categories', () => {
+		const faker = CategoryFakeBuilder.theCategories(5);
+		let categories = faker.build();
+
+		expect(categories.length).toBe(5);
+
+		categories.forEach((category) => {
+			expect(category.uniqueEntityId).toBeInstanceOf(UniqueEntityId);
+			expect(typeof category.name === 'string').toBeTruthy();
+			expect(typeof category.description === 'string').toBeTruthy();
+			expect(category.is_active).toBeTruthy();
+			expect(category.created_at).toBeInstanceOf(Date);
+		});
+
+		const created_at = new Date();
+		const uniqueEntityId = new UniqueEntityId();
+		categories = faker
+			.withUniqueEntityId(uniqueEntityId)
+			.withName('Movie')
+			.withDescription('Some description')
+			.deactivate()
+			.withCreatedAt(created_at)
+			.build();
+
+		expect(categories.length).toBe(5);
+		categories.forEach((category) => {
+			expect(category.uniqueEntityId.value).toBe(uniqueEntityId.value);
+			expect(category.name).toBe('Movie');
+			expect(category.description).toBe('Some description');
+			expect(category.is_active).toBeFalsy();
+			expect(category.created_at).toBe(created_at);
+		});
+	});
 });
