@@ -126,7 +126,7 @@ describe('CategoriesController Unit Tests', () => {
             per_page: 10,
             sort: 'name',
             sort_dir: 'asc' as SortDirection,
-            fiter: 'Movie',
+            filter: 'Movie',
         };
 
         const presenter = await controller.search(searchParams);
