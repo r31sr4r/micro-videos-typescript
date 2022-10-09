@@ -10,7 +10,7 @@ export class CategoryPresenter {
     name: string;
     description: string | null;
     is_active: boolean;
-    @Transform(({ value }) => value.toISOString(), { toPlainOnly: true })
+    @Transform(({ value }) => value.toISOString())
     created_at: Date;
 
     constructor(output: CategoryOutput) {
@@ -22,7 +22,7 @@ export class CategoryPresenter {
     }
 }
 
-export class CategoryCollectionPresenter extends CollectionPresenter {    
+export class CategoryCollectionPresenter extends CollectionPresenter {
     data: CategoryPresenter[];
 
     constructor(output: ListCategoriesUseCase.Output) {
