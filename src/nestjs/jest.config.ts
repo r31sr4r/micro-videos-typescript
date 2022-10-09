@@ -10,7 +10,9 @@ export default {
         '^.+\\.(t|j)s$': '@swc/jest',
     },
     collectCoverageFrom: ['**/*.(t|j)s'],
-    coverageDirectory: '../coverage',
+    // Indicates which provider should be used to instrument code for coverage
+	coverageProvider: 'v8',
+	coverageDirectory: '../__coverage',
     testEnvironment: 'node',
     moduleNameMapper: {
         '@fc/micro\\-videos/(.*)$':
@@ -25,4 +27,13 @@ export default {
             '<rootDir>/../../../node_modules/@fc/micro-videos/dist/category/$1',
     },
     setupFilesAfterEnv: ['../../@core/src/@seedwork/domain/tests/jest.ts'],
+    // An object that configures minimum threshold enforcement for coverage results
+    coverageThreshold: {
+        global: {
+            branches: 90,
+            functions: 90,
+            lines: 90,
+            statements: 90,
+        },
+    },
 };
