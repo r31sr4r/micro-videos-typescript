@@ -9,7 +9,7 @@ export class CategoryFakeBuilder<TBuild = any> {
 
 	// auto generated in entity
 	private _unique_entity_id = undefined;
-	private _name: PropOrFactory<string> = (_index) => this.chance.word();
+	private _name: PropOrFactory<string> = (_index) => this.chance.word({ length: 10 });
 	private _description: PropOrFactory<string | null> = (_index) =>
 		this.chance.paragraph();
 	private _is_active: PropOrFactory<boolean> = (_index) => true;
