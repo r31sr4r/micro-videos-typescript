@@ -3,8 +3,8 @@ export default {
         name: 'nestjs',
         color: 'magentaBright',
     },
-    moduleFileExtensions: ['js', 'json', 'ts'],
-    rootDir: 'src',
+    moduleFileExtensions: ['js', 'json', 'ts'],   
+    rootDir: './', 
     testRegex: '.*\\..*spec\\.ts$',
     transform: {
         '^.+\\.(t|j)s$': '@swc/jest',
@@ -16,17 +16,17 @@ export default {
     testEnvironment: 'node',
     moduleNameMapper: {
         '@fc/micro\\-videos/(.*)$':
-            '<rootDir>/../../../node_modules/@fc/micro-videos/dist/$1',
+            '<rootDir>/../../node_modules/@fc/micro-videos/dist/$1',
         // '#seedwork/domain':
         //     '<rootDir>/../../../node_modules/@fc/micro-videos/dist/@seedwork/domain/index.js',
         '#seedwork/(.*)$':
-            '<rootDir>/../../../node_modules/@fc/micro-videos/dist/@seedwork/$1',
+            '<rootDir>/../../node_modules/@fc/micro-videos/dist/@seedwork/$1',
         // '#category/domain':
         //     '<rootDir>/../../../node_modules/@fc/micro-videos/dist/category/domain/index.js',
         '#category/(.*)$':
-            '<rootDir>/../../../node_modules/@fc/micro-videos/dist/category/$1',
+            '<rootDir>/../../node_modules/@fc/micro-videos/dist/category/$1',
     },
-    setupFilesAfterEnv: ['../../@core/src/@seedwork/domain/tests/jest.ts'],
+    setupFilesAfterEnv: ['../@core/src/@seedwork/domain/tests/jest.ts'],
     // An object that configures minimum threshold enforcement for coverage results
     coverageThreshold: {
         global: {
