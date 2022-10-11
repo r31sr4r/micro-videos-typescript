@@ -4,26 +4,17 @@ import {
     DeleteCategoryUseCase,
     GetCategoryUseCase,
     ListCategoriesUseCase,
-    UpdateCategoryUseCase,
+    UpdateCategoryUseCase
 } from '@fc/micro-videos/category/application';
 import {
-    Controller,
-    Get,
-    Post,
-    Body,
-    Param,
-    Delete,
-    Inject,
-    Put,
-    HttpCode,
-    Query,
+    Body, Controller, Delete, Get, HttpCode, Inject, Param, Post, Put, Query
 } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { SearchCategoryDto } from './dto/search-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import {
     CategoryCollectionPresenter,
-    CategoryPresenter,
+    CategoryPresenter
 } from './presenter/category.presenter';
 
 @Controller('categories')

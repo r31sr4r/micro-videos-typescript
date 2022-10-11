@@ -7,6 +7,7 @@ import { CATEGORY_PROVIDERS } from '../../src/categories/category.providers';
 import { CategoryFixture } from '../../src/categories/fixtures';
 import { CategoriesController } from '../../src/categories/categories.controller';
 import { instanceToPlain } from 'class-transformer';
+import { applyGlobalConfig } from '../../src/global-config';
 
 describe('CategoriesController (e2e)', () => {
     let app: INestApplication;
@@ -21,6 +22,7 @@ describe('CategoriesController (e2e)', () => {
         categoryRepo = moduleFixture.get<CategoryRepository.Repository>(
             CATEGORY_PROVIDERS.REPOSITORIES.CATEGORY_REPOSITORY.provide,
         );
+        applyGlobalConfig(app);
         await app.init();
     });
 
@@ -37,10 +39,12 @@ describe('CategoriesController (e2e)', () => {
                         .expect(201);
                     const keysInResponse = CategoryFixture.keysInResponse();
 
-                    expect(Object.keys(res.body)).toStrictEqual(keysInResponse);
+                    expect(Object.keys(res.body)).toEqual(['data']);
+                    expect(Object.keys(res.body.data)).toStrictEqual(keysInResponse);
 
+                    const id = res.body.data.id;
                     const createdCategory = await categoryRepo.findById(
-                        res.body.id,
+                        id,
                     );
                     const presenter =
                         CategoriesController.categoryToResponse(
@@ -48,9 +52,9 @@ describe('CategoriesController (e2e)', () => {
                         );
                     const serialized = instanceToPlain(presenter);
 
-                    expect(res.body).toStrictEqual(serialized);
+                    expect(res.body.data).toStrictEqual(serialized);
  
-                    expect(res.body).toStrictEqual({
+                    expect(res.body.data).toStrictEqual({
                         id: serialized.id,
                         created_at: serialized.created_at,
                         ...send_data,
