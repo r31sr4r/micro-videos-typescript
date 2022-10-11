@@ -27,6 +27,14 @@ describe('CategoriesController (e2e)', () => {
     });
 
     describe('POST /categories', () => {
+
+        it('validates the request body', async () => {
+            const response = await request(app.getHttpServer())
+                .post('/categories')
+                .send({});
+            expect(response.status).toBe(422);
+        });
+
         describe('should create a category', () => {
             const arrange = CategoryFixture.arrangeForSave();
 

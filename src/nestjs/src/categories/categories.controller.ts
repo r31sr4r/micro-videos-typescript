@@ -4,17 +4,26 @@ import {
     DeleteCategoryUseCase,
     GetCategoryUseCase,
     ListCategoriesUseCase,
-    UpdateCategoryUseCase
+    UpdateCategoryUseCase,
 } from '@fc/micro-videos/category/application';
 import {
-    Body, Controller, Delete, Get, HttpCode, Inject, Param, Post, Put, Query
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpCode,
+    Inject,
+    Param,
+    Post,
+    Put,
+    Query,    
 } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { SearchCategoryDto } from './dto/search-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import {
     CategoryCollectionPresenter,
-    CategoryPresenter
+    CategoryPresenter,
 } from './presenter/category.presenter';
 
 @Controller('categories')
@@ -35,7 +44,9 @@ export class CategoriesController {
     private listUseCase: ListCategoriesUseCase.UseCase;
 
     @Post()
-    async create(@Body() createCategoryDto: CreateCategoryDto) {
+    async create(
+        @Body() createCategoryDto: CreateCategoryDto,
+    ) {
         const output = await this.createUseCase.execute(createCategoryDto);
         return CategoriesController.categoryToResponse(output);
     }
