@@ -27,12 +27,30 @@ describe('CategoriesController (e2e)', () => {
     });
 
     describe('POST /categories', () => {
-
         it('validates the request body', async () => {
             const response = await request(app.getHttpServer())
                 .post('/categories')
                 .send({});
             expect(response.status).toBe(422);
+        });
+
+        describe('should return error 422 when the request body is invalid', () => {
+            const invalidRequest = CategoryFixture.arrangeInvalidRequest();
+            const arrange = Object.keys(invalidRequest).map((key) => ({
+                label: key,
+                value: invalidRequest[key],
+            }));
+
+            test.each(arrange)(
+                'when the request body is $label',
+                ({ value }) => {
+                    return request(app.getHttpServer())
+                        .post('/categories')
+                        .send(value.send_data)
+                        .expect(422)
+                        .expect(value.expected);
+                },
+            );
         });
 
         describe('should create a category', () => {
@@ -48,20 +66,19 @@ describe('CategoriesController (e2e)', () => {
                     const keysInResponse = CategoryFixture.keysInResponse();
 
                     expect(Object.keys(res.body)).toEqual(['data']);
-                    expect(Object.keys(res.body.data)).toStrictEqual(keysInResponse);
+                    expect(Object.keys(res.body.data)).toStrictEqual(
+                        keysInResponse,
+                    );
 
                     const id = res.body.data.id;
-                    const createdCategory = await categoryRepo.findById(
-                        id,
+                    const createdCategory = await categoryRepo.findById(id);
+                    const presenter = CategoriesController.categoryToResponse(
+                        createdCategory.toJSON(),
                     );
-                    const presenter =
-                        CategoriesController.categoryToResponse(
-                            createdCategory.toJSON(),
-                        );
                     const serialized = instanceToPlain(presenter);
 
                     expect(res.body.data).toStrictEqual(serialized);
- 
+
                     expect(res.body.data).toStrictEqual({
                         id: serialized.id,
                         created_at: serialized.created_at,
