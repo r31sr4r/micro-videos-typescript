@@ -14,9 +14,10 @@ import {
     HttpCode,
     Inject,
     Param,
+    ParseUUIDPipe,
     Post,
     Put,
-    Query,    
+    Query,
 } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { SearchCategoryDto } from './dto/search-category.dto';
@@ -44,16 +45,15 @@ export class CategoriesController {
     private listUseCase: ListCategoriesUseCase.UseCase;
 
     @Post()
-    async create(
-        @Body() createCategoryDto: CreateCategoryDto,
-    ) {
+    async create(@Body() createCategoryDto: CreateCategoryDto) {
         const output = await this.createUseCase.execute(createCategoryDto);
         return CategoriesController.categoryToResponse(output);
     }
 
     @Put(':id')
     async update(
-        @Param('id') id: string,
+        @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 422 }))
+        id: string,
         @Body() updateCategoryDto: UpdateCategoryDto,
     ) {
         const output = await this.updateUseCase.execute({
@@ -65,12 +65,18 @@ export class CategoriesController {
 
     @HttpCode(204)
     @Delete(':id')
-    remove(@Param('id') id: string) {
+    remove(
+        @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 422 }))
+        id: string,
+    ) {
         return this.deleteUseCase.execute({ id });
     }
 
     @Get(':id')
-    async findOne(@Param('id') id: string) {
+    async findOne(
+        @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 422 }))
+        id: string,
+    ) {
         const output = await this.getUseCase.execute({ id });
         return CategoriesController.categoryToResponse(output);
     }
