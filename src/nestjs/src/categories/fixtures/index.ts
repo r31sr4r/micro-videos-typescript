@@ -190,7 +190,10 @@ export class CategoryFixture {
                     name: faker.withInvalidNameNotAStr(1).name,
                 },
                 expected: {
-                    message: ['name must be a string', 'name must be shorter than or equal to 255 characters'],
+                    message: [
+                        'name must be a string',
+                        'name must be shorter than or equal to 255 characters',
+                    ],
                     ...defaultExpected,
                 },
             },
@@ -216,5 +219,43 @@ export class CategoryFixture {
                 },
             },
         };
+    }
+}
+
+export class CreateCategoryFixture {
+    static keysInResponse() {
+        return CategoryFixture.keysInResponse();
+    }
+
+    static arrangeForSave() {
+        return CategoryFixture.arrangeForSave();
+    }
+
+    static arrangeInvalidRequest() {
+        return CategoryFixture.arrangeInvalidRequest();
+    }
+
+    static arrangeForEntityValidationError() {
+        return CategoryFixture.arrangeForEntityValidationError();
+    }
+}
+
+export class UpdateCategoryFixture {
+    static keysInResponse() {
+        return CategoryFixture.keysInResponse();
+    }
+
+    static arrangeForSave() {
+        return CategoryFixture.arrangeForSave();
+    }
+
+    static arrangeInvalidRequest() {
+        return CategoryFixture.arrangeInvalidRequest();
+    }
+
+    static arrangeForEntityValidationError() {
+        const { IS_ACTIVE_NOT_BOOLEAN, ...otherKeys } =
+            CategoryFixture.arrangeForEntityValidationError();
+        return otherKeys;
     }
 }
