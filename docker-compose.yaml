@@ -1,4 +1,4 @@
-version: "3"
+version: "3.4"
 
 services:
   app:
@@ -13,8 +13,8 @@ services:
   db: 
     image: mysql:8.0.30-debian
     container_name: micro-videos-typescript-db
-    profiles:
-      - dev
+    # profiles:
+    #   - dev
     environment:
       - MYSQL_DATABASE=micro_videos      
       - MYSQL_ROOT_PASSWORD=root
@@ -31,6 +31,6 @@ services:
       - MYSQL_ROOT_PASSWORD=root  
     ports:
       - 33007:3306
-    tmpfs:
-      - /var/lib/mysql
+    # tmpfs:
+    #   - /var/lib/mysql
     
