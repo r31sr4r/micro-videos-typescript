@@ -1,4 +1,5 @@
 import { Category, CategoryRepository } from '@fc/micro-videos/category/domain';
+import { getConnectionToken } from '@nestjs/sequelize';
 import { instanceToPlain } from 'class-transformer';
 import request from 'supertest';
 import { startApp } from '../../src/@share/testing/helpers';
@@ -9,7 +10,7 @@ import { UpdateCategoryFixture } from '../../src/categories/fixtures';
 describe('CategoriesController (e2e)', () => {
     const uuid = 'a7f14b3b-27ab-4f1b-9cc8-fdbe49a01f07';
 
-    describe('PUT /categories/:id', () => {
+    describe('/categories/:id (PUT)', () => {
         describe('should return error 404 when the category does not exist or id is invalid', () => {
             const app = startApp();
             const faker = Category.fake().aCategory();
@@ -112,6 +113,8 @@ describe('CategoriesController (e2e)', () => {
                 categoryRepo = app.app.get<CategoryRepository.Repository>(
                     CATEGORY_PROVIDERS.REPOSITORIES.CATEGORY_REPOSITORY.provide,
                 );
+                // const sequelize = app.app.get(getConnectionToken());
+                // await sequelize.sync({ force: true });
             });
 
             test.each(arrange)(

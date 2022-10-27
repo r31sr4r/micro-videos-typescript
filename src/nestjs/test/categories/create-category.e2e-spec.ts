@@ -8,7 +8,7 @@ import { CreateCategoryFixture } from '../../src/categories/fixtures';
 
 describe('CategoriesController (e2e)', () => {
 
-    describe('POST /categories', () => {
+    describe('/categories (POST)', () => {
 
         describe('should return error 422 when the request body is invalid', () => {
             const app = startApp();
