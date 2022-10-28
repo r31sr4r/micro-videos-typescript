@@ -1,7 +1,4 @@
-import {
-    NotFoundError,
-    SortDirection,
-} from '@fc/micro-videos/@seedwork/domain';
+import { NotFoundError } from '@fc/micro-videos/@seedwork/domain';
 import {
     CreateCategoryUseCase,
     DeleteCategoryUseCase,
@@ -11,13 +8,20 @@ import {
 } from '@fc/micro-videos/category/application';
 import { Category, CategoryRepository } from '@fc/micro-videos/category/domain';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CategoryFixture } from '../../fixtures';
 import { ConfigModule } from '../../../config/config.module';
 import { DatabaseModule } from '../../../database/database.module';
 import { CategoriesController } from '../../categories.controller';
 import { CategoriesModule } from '../../categories.module';
 import { CATEGORY_PROVIDERS } from '../../category.providers';
-import { CategoryCollectionPresenter, CategoryPresenter } from '../../presenter/category.presenter';
+import {
+    CategoryFixture,
+    ListCategoriesFixture,
+    UpdateCategoryFixture,
+} from '../../fixtures';
+import {
+    CategoryCollectionPresenter,
+    CategoryPresenter,
+} from '../../presenter/category.presenter';
 
 describe('CategoriesController Integration Tests', () => {
     let controller: CategoriesController;
@@ -75,80 +79,30 @@ describe('CategoriesController Integration Tests', () => {
     });
 
     describe('should update a category', () => {
+        const arrange = UpdateCategoryFixture.arrangeForSave();
+
         const category = Category.fake().aCategory().build();
         beforeEach(async () => {
             await repository.insert(category);
         });
 
-        const arrange = [
-            {
-                request: {
-                    name: 'Movie',
-                },
-                expectedPresenter: {
-                    name: 'Movie',
-                    description: null,
-                    is_active: true,
-                },
-            },
-            {
-                request: {
-                    name: 'Movie',
-                    description: 'Movie category',
-                },
-                expectedPresenter: {
-                    name: 'Movie',
-                    description: 'Movie category',
-                    is_active: true,
-                },
-            },
-            {
-                request: {
-                    name: 'Movie',
-                    description: 'Movie category',
-                    is_active: false,
-                },
-                expectedPresenter: {
-                    name: 'Movie',
-                    description: 'Movie category',
-                    is_active: false,
-                },
-            },
-            {
-                request: {
-                    name: 'Movie',
-                    description: 'Movie category',
-                    is_active: false,
-                },
-                expectedPresenter: {
-                    name: 'Movie',
-                    description: 'Movie category',
-                    is_active: false,
-                },
-            },
-        ];
-
         test.each(arrange)(
-            'with request $request',
-            async ({ request, expectedPresenter }) => {
-                const presenter = await controller.update(category.id, request);
+            'with request $send_data',
+            async ({ send_data, expected }) => {
+                const presenter = await controller.update(
+                    category.id,
+                    send_data,
+                );
                 const entity = await repository.findById(presenter.id);
 
                 expect(entity).toMatchObject({
                     id: presenter.id,
-                    name: expectedPresenter.name,
-                    description: expectedPresenter.description,
-                    is_active: expectedPresenter.is_active,
                     created_at: presenter.created_at,
+                    ...send_data,
+                    ...expected,
                 });
 
-                expect(presenter.id).toBe(entity.id);
-                expect(presenter.name).toBe(expectedPresenter.name);
-                expect(presenter.description).toBe(
-                    expectedPresenter.description,
-                );
-                expect(presenter.is_active).toBe(expectedPresenter.is_active);
-                expect(presenter.created_at).toStrictEqual(entity.created_at);
+                expect(presenter).toEqual(new CategoryPresenter(entity));
             },
         );
     });
@@ -187,140 +141,51 @@ describe('CategoriesController Integration Tests', () => {
     });
 
     describe('search method', () => {
-        it('should return categories without query ordered by created_ad', async () => {
-            const categories = Category.fake()
-                .theCategories(4)
-                .withName((index) => `Category ${index}`)
-                .withCreatedAt(
-                    (index) => new Date(new Date().getTime() + index),
-                )
-                .build();
+        describe('should return categories without query ordered by created_ad', () => {
+            const { entitiesMap, arrange } =
+                ListCategoriesFixture.arrangeIncrementedWithCreatedAt();
 
-            await repository.bulkInsert(categories);
+            beforeEach(async () => {
+                await repository.bulkInsert(Object.values(entitiesMap));
+            });
 
-            const arrange = [
-                {
-                    send_data: { per_page: 2 },
-                    expected: {
-                        items: [categories[3], categories[2]],
-                        current_page: 1,
-                        last_page: 2,
-                        per_page: 2,
-                        total: 4,
-                    },
+            test.each(arrange)(
+                'when send_data is $send_data',
+                async ({ send_data, expected }) => {
+                    const presenter = await controller.search(send_data);
+                    const { entities, ...paginationProps } = expected;
+
+                    expect(presenter).toEqual(
+                        new CategoryCollectionPresenter({
+                            items: entities,
+                            ...paginationProps.meta,
+                        }),
+                    );
                 },
-                {
-                    send_data: { per_page: 2, page: 2 },
-                    expected: {
-                        items: [categories[1], categories[0]],
-                        current_page: 2,
-                        last_page: 2,
-                        per_page: 2,
-                        total: 4,
-                    },
-                },
-            ];
-
-            for (const item of arrange) {
-                const presenter = await controller.search(item.send_data);
-                expect(presenter).toEqual(
-                    new CategoryCollectionPresenter(item.expected),
-                );
-            }
+            );
         });
 
-        it('should returns output using pagination, sort and filter', async () => {
-            const faker = Category.fake().aCategory();
-            const categories = [
-                faker.withName('a').build(),
-                faker.withName('AAA').build(),
-                faker.withName('AaA').build(),
-                faker.withName('b').build(),
-                faker.withName('c').build(),
-            ];
-            await repository.bulkInsert(categories);
+        describe('should returns output using pagination, sort and filter', () => {
+            const { entitiesMap, arrange } =
+                ListCategoriesFixture.arrangeIncrementedWithCreatedAt();
 
-            const arrange_asc = [
-                {
-                    send_data: {
-                        page: 1,
-                        per_page: 2,
-                        sort: 'name',
-                        filter: 'a',
-                    },
-                    expected: {
-                        items: [categories[1], categories[2]],
-                        current_page: 1,
-                        last_page: 2,
-                        per_page: 2,
-                        total: 3,
-                    },
-                },
-                {
-                    send_data: {
-                        page: 2,
-                        per_page: 2,
-                        sort: 'name',
-                        filter: 'a',
-                    },
-                    expected: {
-                        items: [categories[0]],
-                        current_page: 2,
-                        last_page: 2,
-                        per_page: 2,
-                        total: 3,
-                    },
-                },
-            ];
+            beforeEach(async () => {
+                await repository.bulkInsert(Object.values(entitiesMap));
+            });
 
-            for (const item of arrange_asc) {
-                const presenter = await controller.search(item.send_data);
-                expect(presenter).toEqual(
-                    new CategoryCollectionPresenter(item.expected),
-                );
-            }
-
-            const arrange_desc = [
-                {
-                    send_data: {
-                        page: 1,
-                        per_page: 2,
-                        sort: 'name',
-                        sort_dir: 'desc' as SortDirection,
-                        filter: 'a',
-                    },
-                    expected: {
-                        items: [categories[0], categories[2]],
-                        current_page: 1,
-                        last_page: 2,
-                        per_page: 2,
-                        total: 3,
-                    },
+            test.each(arrange)(
+                'when send_data is $send_data',
+                async ({ send_data, expected }) => {
+                    const presenter = await controller.search(send_data);
+                    const { entities, ...paginationProps } = expected;
+                    expect(presenter).toEqual(
+                        new CategoryCollectionPresenter({
+                            items: entities,
+                            ...paginationProps.meta,
+                        }),
+                    );
                 },
-                {
-                    send_data: {
-                        page: 2,
-                        per_page: 2,
-                        sort: 'name',
-                        sort_dir: 'desc' as SortDirection,
-                        filter: 'a',
-                    },
-                    expected: {
-                        items: [categories[1]],
-                        current_page: 2,
-                        last_page: 2,
-                        per_page: 2,
-                        total: 3,
-                    },
-                },
-            ];
-
-            for (const item of arrange_desc) {
-                const presenter = await controller.search(item.send_data);
-                expect(presenter).toEqual(
-                    new CategoryCollectionPresenter(item.expected),
-                );
-            }
+            );
         });
     });
 });

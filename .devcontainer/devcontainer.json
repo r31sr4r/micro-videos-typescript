@@ -37,5 +37,12 @@
 
 	"settings": {
 		"terminal.integrated.defaultProfile.linux": "zsh"
-	}
+	},
+
+	"extensions": [
+		"github.copilot",
+		"esbenp.prettier-vscode",
+		"dbaeumer.vscode-eslint",
+		"sonarsource.sonarlint-vscode"		
+	]
 }
