@@ -41,7 +41,7 @@ describe('CategoryPresenter Unit Tests', () => {
             name: 'Category 1',
             description: 'Category 1 description',
             is_active: true,
-            created_at: created_at.toISOString(),
+            created_at: created_at.toISOString().slice(0, 19) + '.000Z',
         });
     });
 });
@@ -120,7 +120,7 @@ describe('CategoryCollectionPresenter Unit Tests', () => {
                     name: 'Category 1',
                     description: 'Category 1 description',
                     is_active: true,
-                    created_at: created_at.toISOString(),
+                    created_at: created_at.toISOString().slice(0, 19) + '.000Z',
                 },
             ],
         });
@@ -154,7 +154,7 @@ describe('CategoryCollectionPresenter Unit Tests', () => {
                     name: 'Category 1',
                     description: 'Category 1 description',
                     is_active: true,
-                    created_at: created_at.toISOString(),
+                    created_at: created_at.toISOString().slice(0, 19) + '.000Z',
                 },
             ],
         });

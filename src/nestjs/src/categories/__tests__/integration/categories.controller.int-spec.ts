@@ -141,7 +141,7 @@ describe('CategoriesController Integration Tests', () => {
     });
 
     describe('search method', () => {
-        describe('should return categories without query ordered by created_ad', () => {
+        describe('should return categories sorted by created_at when request query is empty', () => {
             const { entitiesMap, arrange } =
                 ListCategoriesFixture.arrangeIncrementedWithCreatedAt();
 
@@ -150,7 +150,7 @@ describe('CategoriesController Integration Tests', () => {
             });
 
             test.each(arrange)(
-                'when send_data is $send_data',
+                'when query params is $send_data',
                 async ({ send_data, expected }) => {
                     const presenter = await controller.search(send_data);
                     const { entities, ...paginationProps } = expected;
