@@ -5,6 +5,7 @@
 	"main": "index.js",
 	"imports": {
 		"#seedwork/domain": "./dist/@seedwork/domain/index.js",
+		"#seedwork/infra": "./dist/@seedwork/infra/index.js",
 		"#seedwork/*": "./dist/@seedwork/*.js",
 		"#category/domain*": "./dist/category/domain/index.js",
 		"#category/*": "./dist/category/*.js"
@@ -12,6 +13,7 @@
 	"exports": {
 		"./@seedwork/application": "./dist/@seedwork/application/index.js",
 		"./@seedwork/domain": "./dist/@seedwork/domain/index.js",
+		"./@seedwork/infra": "./dist/@seedwork/infra/index.js",
 		"./category/application": "./dist/category/application/index.js",
 		"./category/domain": "./dist/category/domain/index.js",
 		"./category/infra": "./dist/category/infra/index.js"
@@ -75,7 +77,8 @@
 		"test": "jest",
 		"test:cov": "npm run test -- --coverage",
 		"cti": "cti",
-		"cti:make": "sh ./cti.sh"
+		"cti:make": "sh ./cti.sh",
+		"migrate": "node -r ts-node/register/transpile-only ./src/@seedwork/infra/db/sequelize/migrator-cli.ts"
 	},
 	"keywords": [],
 	"author": "",
