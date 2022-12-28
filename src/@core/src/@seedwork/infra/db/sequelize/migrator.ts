@@ -2,7 +2,6 @@ import { join } from 'path';
 import { Sequelize } from 'sequelize';
 import { SequelizeStorage, Umzug, UmzugOptions } from 'umzug';
 
-
 export const migrator = (
 	sequelize: Sequelize,
 	options?: Partial<UmzugOptions>
@@ -11,11 +10,14 @@ export const migrator = (
 		migrations: {
 			glob: [
 				'*/infra/db/sequelize/migrations/*.{js,ts}',
-				{ cwd: join(__dirname, '../../../..'), ignore: ['*.d.ts'] },
+				{
+					cwd: join(__dirname, '../../../..'),
+					ignore: ['**/*.d.ts', '**/index.ts', '**/index.js'],
+				},
 			],
 		},
 		context: sequelize,
 		storage: new SequelizeStorage({ sequelize }),
 		logger: console,
-        ...(options || {}),
+		...(options || {}),
 	});

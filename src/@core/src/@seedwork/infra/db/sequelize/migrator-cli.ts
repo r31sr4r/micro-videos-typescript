@@ -4,7 +4,7 @@ import { Sequelize } from 'sequelize-typescript';
 const sequelize = new Sequelize({
 	dialect: 'sqlite',
 	host: ':memory:',
-	logging: true,
+	logging: true
 });
 
 migrator(sequelize).runAsCLI();

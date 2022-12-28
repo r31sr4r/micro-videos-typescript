@@ -21,6 +21,8 @@ services:
       - 33006:3306
     volumes:
       - ./.docker/dbdata:/var/lib/mysql:delegated
+    security_opt:
+      - seccomp:unconfined
 
   db_test: 
     image: mysql:8.0.30-debian
@@ -32,4 +34,5 @@ services:
       - 33007:3306
     tmpfs:
       - /var/lib/mysql
-    
+    security_opt:
+      - seccomp:unconfined
