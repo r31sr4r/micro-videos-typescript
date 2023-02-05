@@ -53,7 +53,7 @@ describe('DatabaseModule Unit Tests', () => {
             DB_DATABASE: 'micro_videos_test',
             DB_USERNAME: 'root',
             DB_PASSWORD: 'root',
-            DB_PORT: 33007,
+            DB_PORT: 3306,
             DB_LOGGING: false,
             DB_AUTO_LOAD_MODELS: true,
         };
