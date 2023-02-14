@@ -333,32 +333,27 @@ describe('CategoryRepository Unit Tests', () => {
 				created_at: new Date(),
 			};
 
-			const categoriesProps = [
-				{
-					id: chance.guid({ version: 4 }),
+			const entities = [
+				new Category({
 					name: 'some name',
 					...defaultProps,
-				},
-				{
-					id: chance.guid({ version: 4 }),
+				}),
+				new Category({
 					name: 'other name',
 					...defaultProps,
-				},
-				{
-					id: chance.guid({ version: 4 }),
+				}),
+				new Category({
 					name: 'some other name',
 					...defaultProps,
-				},
-				{
-					id: chance.guid({ version: 4 }),
+				}),
+				new Category({
 					name: 'name',
 					...defaultProps,
-				},
-				{
-					id: chance.guid({ version: 4 }),
+				}),
+				new Category({
 					name: 'some test',
 					...defaultProps,
-				},
+				}),
 			];
 
 			let arrange = [
@@ -370,10 +365,7 @@ describe('CategoryRepository Unit Tests', () => {
 						filter: 'some',
 					}),
 					result: new CategoryRepository.SearchResult({
-						items: [
-							new Category(categoriesProps[0]),
-							new Category(categoriesProps[2]),
-						],
+						items: [entities[0], entities[2]],
 						total: 3,
 						current_page: 1,
 						per_page: 2,
@@ -390,7 +382,7 @@ describe('CategoryRepository Unit Tests', () => {
 						filter: 'some',
 					}),
 					result: new CategoryRepository.SearchResult({
-						items: [new Category(categoriesProps[4])],
+						items: [entities[4]],
 						total: 3,
 						current_page: 2,
 						per_page: 2,
@@ -408,10 +400,7 @@ describe('CategoryRepository Unit Tests', () => {
 						filter: 'some',
 					}),
 					result: new CategoryRepository.SearchResult({
-						items: [
-							new Category(categoriesProps[4]),
-							new Category(categoriesProps[2]),
-						],
+						items: [entities[4], entities[2]],
 						total: 3,
 						current_page: 1,
 						per_page: 2,
@@ -423,18 +412,16 @@ describe('CategoryRepository Unit Tests', () => {
 			];
 
 			beforeEach(async () => {
-				await CategoryModel.bulkCreate(categoriesProps);
+				await CategoryModel.bulkCreate(entities.map((e) => e.toJSON()));
 			});
 
 			test.each(arrange)(
 				'when value is $params',
 				async ({ params, result }) => {
 					let resultList = await repository.search(params);
-					console.log(resultList.items);
-					console.log(result.items);
-					// expect(resultList.toJSON(true)).toMatchObject(
-					// 	result.toJSON(true)
-					// );
+					expect(resultList.toJSON(true)).toMatchObject(
+						result.toJSON(true)
+					);
 				}
 			);
 		});
@@ -479,9 +466,7 @@ describe('CategoryRepository Unit Tests', () => {
 		await repository.insert(category);
 
 		await repository.delete(category.id);
-		let entityFound = await CategoryModel.findByPk(
-			category.id
-		);
+		let entityFound = await CategoryModel.findByPk(category.id);
 
 		expect(entityFound).toBeNull();
 	});
