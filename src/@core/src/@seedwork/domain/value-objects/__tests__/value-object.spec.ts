@@ -63,4 +63,48 @@ describe('ValueObject Unit Tests', () => {
 
 		expect(vo.value.deep.prop3).toBeInstanceOf(Date);
 	});
+
+	describe('should compare two value objects and return true if equal', () => {
+		const arrange = [
+			{ received: '', expected: '' },
+			{ received: 'fake test', expected: 'fake test' },
+			{ received: 0, expected: 0 },
+			{ received: 1, expected: 1 },
+			{ received: 5, expected: 5 },
+			{ received: true, expected: true },
+			{ received: false, expected: false },
+		];
+
+		test.each(arrange)(
+			'should compare $received to $expected',
+			({ received, expected }) => {
+				const vo1 = new StubValueObject(received);
+				const vo2 = new StubValueObject(expected);
+
+				expect(vo1.equals(vo2)).toBeTruthy();
+			}
+		);			
+	});
+
+	describe('should compare two value objects and return false if not equal', () => {
+		const arrange = [
+			{ received: '', expected: ' ' },
+			{ received: 'fake test', expected: 'fake test 2' },
+			{ received: 0, expected: 1 },
+			{ received: 1, expected: 2 },
+			{ received: 5, expected: 6 },
+			{ received: true, expected: false },
+			{ received: false, expected: true },
+		];
+
+		test.each(arrange)(
+			'should compare $received to $expected',
+			({ received, expected }) => {
+				const vo1 = new StubValueObject(received);
+				const vo2 = new StubValueObject(expected);
+
+				expect(vo1.equals(vo2)).toBeFalsy();
+			}
+		);
+	});
 });

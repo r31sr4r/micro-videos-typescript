@@ -15,6 +15,10 @@ export abstract class Entity<
 	}
 
 	abstract toJSON(): JsonProps;
+
+	equals(obj: this): boolean {
+		return this.id === obj.id;
+	}
 }
 
 export default Entity;

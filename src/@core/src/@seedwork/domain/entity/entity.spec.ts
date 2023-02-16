@@ -45,4 +45,23 @@ describe('entity Unit Tests', () => {
         )
     });
 
+    it('should compare two entities and return true if they are equal', () => {
+        const arrange = {prop1: 'prop1', prop2: 1}
+        const uniqueEntityId = new UniqueEntityId();        
+        const entity = new StubEntity(arrange, uniqueEntityId);
+        const entity2 = new StubEntity(arrange, uniqueEntityId);
+
+        expect(entity.equals(entity2)).toBeTruthy();
+    });
+
+    it('should compare two entities and return false if they are not equal', () => {
+        const arrange = {prop1: 'prop1', prop2: 1}
+        const uniqueEntityId = new UniqueEntityId();     
+        const uniqueEntityId2 = new UniqueEntityId();   
+        const entity = new StubEntity(arrange, uniqueEntityId);
+        const entity2 = new StubEntity(arrange, uniqueEntityId2);
+
+        expect(entity.equals(entity2)).toBeFalsy();
+    });
+
 });
