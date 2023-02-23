@@ -14,9 +14,13 @@ describe('PaginationOutput Unit Tests', () => {
 				filter: 'fake',
 			});
 
-			const output = PaginationOutputMapper.toOutput(result);
+			const output = PaginationOutputMapper.toOutput({
+				items: result.items, 
+				...result
+			});
 
 			expect(output).toStrictEqual({
+				items: ['fake'],
 				total: 1,
 				current_page: 1,
 				last_page: 1,
