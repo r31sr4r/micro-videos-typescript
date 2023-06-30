@@ -17,7 +17,7 @@ describe('CategoriesController (e2e)', () => {
                     id: 'e36e81a9-7b70-4e73-a917-cb2e7ed94d2f',
                     expected: {
                         message:
-                            'Entity not found using ID e36e81a9-7b70-4e73-a917-cb2e7ed94d2f',
+                            'Entity Not Found using ID e36e81a9-7b70-4e73-a917-cb2e7ed94d2f',
                         statusCode: 404,
                         error: 'Not Found',
                     },
@@ -55,7 +55,7 @@ describe('CategoriesController (e2e)', () => {
                 .expect(204);
 
             await expect(categoryRepo.findById(category.id)).rejects.toThrow(
-                new NotFoundError(`Entity not found using ID ${category.id}`),
+                new NotFoundError(`Entity Not Found using ID ${category.id}`),
             )
 
 

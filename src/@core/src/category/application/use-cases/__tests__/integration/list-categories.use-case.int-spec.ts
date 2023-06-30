@@ -1,101 +1,97 @@
-import { ListCategoriesUseCase } from '../../list-categories.use-case';
-import { setupSequelize } from '#seedwork/infra';
-import { CategorySequelize } from '#category/infra/db/sequelize/category-sequelize';
-import { Category } from '#category/domain';
+import { ListCategoriesUseCase } from "../../list-categories.use-case";
+import { Category } from "../../../../domain/entities/category";
+import { setupSequelize } from "../../../../../@seedwork/infra";
+import { CategorySequelize } from "../../../../infra/db/sequelize/category-sequelize";
 
-const { CategorySequelizeRepository, CategoryModel, CategoryModelMapper } =
-	CategorySequelize;
+describe("ListCategoriesUseCase Integration Tests", () => {
+  let useCase: ListCategoriesUseCase.UseCase;
+  let repository: CategorySequelize.CategoryRepository;
 
-describe('ListCategoriesUseCase Integration Tests', () => {
-	let repository: CategorySequelize.CategorySequelizeRepository;
-	let useCase: ListCategoriesUseCase.UseCase;
+  setupSequelize({ models: [CategorySequelize.CategoryModel] });
 
-	setupSequelize({ models: [CategoryModel] });
+  beforeEach(() => {
+    repository = new CategorySequelize.CategoryRepository(
+      CategorySequelize.CategoryModel
+    );
+    useCase = new ListCategoriesUseCase.UseCase(repository);
+  });
 
-	beforeEach(() => {
-		repository = new CategorySequelizeRepository(CategoryModel);
-		useCase = new ListCategoriesUseCase.UseCase(repository);
-	});
+  it("should return output sorted by created_at when input param is empty", async () => {
+    const categories = Category.fake()
+      .theCategories(2)
+      .withCreatedAt((i) => new Date(new Date().getTime() + 1000 + i))
+      .build();
 
-	it('should return output with four categories ordered by created_at when input is empty', async () => {
-		const faker = Category.fake().theCategories(4);
-		const entities = faker
-		.withName(index => `name ${index}`)
-		.withCreatedAt(index => new Date(new Date().getTime() + index))
-		.build();
+    await repository.bulkInsert(categories);
+    const output = await useCase.execute({});
+    expect(output).toEqual({
+      items: [...categories].reverse().map((i) => i.toJSON()),
+      total: 2,
+      current_page: 1,
+      per_page: 15,
+      last_page: 1,
+    });
+  });
 
-		await repository.bulkInsert(entities);
+  it("should returns output using pagination, sort and filter", async () => {
+    const categories = [
+      new Category({ name: "a" }),
+      new Category({
+        name: "AAA",
+      }),
+      new Category({
+        name: "AaA",
+      }),
+      new Category({
+        name: "b",
+      }),
+      new Category({
+        name: "c",
+      }),
+    ];
+    await repository.bulkInsert(categories);
 
-		const output = await useCase.execute({});
+    let output = await useCase.execute({
+      page: 1,
+      per_page: 2,
+      sort: "name",
+      filter: "a",
+    });
+    expect(output).toEqual({
+      items: [categories[1].toJSON(), categories[2].toJSON()],
+      total: 3,
+      current_page: 1,
+      per_page: 2,
+      last_page: 2,
+    });
 
-		expect(output).toMatchObject({
-			items: [...entities]
-				.reverse()				
-				.map((i) => i.toJSON()),
-			total: 4,
-			current_page: 1,
-			last_page: 1,
-			per_page: 15,
-		});
-	});
+    output = await useCase.execute({
+      page: 2,
+      per_page: 2,
+      sort: "name",
+      filter: "a",
+    });
+    expect(output).toEqual({
+      items: [categories[0].toJSON()],
+      total: 3,
+      current_page: 2,
+      per_page: 2,
+      last_page: 2,
+    });
 
-	it('should return output using paginate, sort and filter', async () => {
-		const faker = Category.fake().aCategory();
-		const entities = [
-			faker.withName('a').build(),
-			faker.withName('AAA').build(),
-			faker.withName('AaA').build(),
-			faker.withName('b').build(),
-			faker.withName('c').build(),
-		]
-
-		await repository.bulkInsert(entities);
-
-		let output = await useCase.execute({
-			page: 1,
-			per_page: 2,
-			sort: 'name',
-			filter: 'a',
-		});
-
-		expect(output).toMatchObject({
-			items: [entities[1], entities[2]]
-				.map((i) => i.toJSON()),
-			total: 3,
-			current_page: 1,
-			last_page: 2,
-			per_page: 2,
-		});
-
-		output = await useCase.execute({
-			page: 2,
-			per_page: 2,
-			sort: 'name',
-			filter: 'a',
-		});
-		expect(output).toMatchObject({
-			items: [entities[0]]
-				.map((i) => i.toJSON()),
-			total: 3,
-			current_page: 2,
-			last_page: 2,
-			per_page: 2,
-		});
-
-		output = await useCase.execute({
-			page: 1,
-			per_page: 2,
-			sort: 'name',
-			sort_dir: 'desc',
-			filter: 'a',
-		});
-		expect(output).toMatchObject({
-			items: [entities[0], entities[2]]
-				.map((i) => i.toJSON()),
-			total: 3,
-			current_page: 1,
-			last_page: 2,
-			per_page: 2,
-		});
-	});
+    output = await useCase.execute({
+      page: 1,
+      per_page: 2,
+      sort: "name",
+      sort_dir: "desc",
+      filter: "a",
+    });
+    expect(output).toEqual({
+      items: [categories[0].toJSON(), categories[2].toJSON()],
+      total: 3,
+      current_page: 1,
+      per_page: 2,
+      last_page: 2,
+    });
+  });
 });

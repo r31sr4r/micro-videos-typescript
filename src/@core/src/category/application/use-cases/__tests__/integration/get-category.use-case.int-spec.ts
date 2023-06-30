@@ -1,41 +1,36 @@
-import NotFoundError from '../../../../../@seedwork/domain/errors/not-found.error';
-import { GetCategoryUseCase } from '../../get-category.use-case';
-import { CategorySequelize } from '#category/infra/db/sequelize/category-sequelize';
-import { setupSequelize } from '#seedwork/infra';
+import {GetCategoryUseCase} from "../../get-category.use-case";
+import NotFoundError from "../../../../../@seedwork/domain/errors/not-found.error";
+import { CategorySequelize } from "../../../../infra/db/sequelize/category-sequelize";
+import { setupSequelize } from "../../../../../@seedwork/infra/testing/helpers/db";
 
-const { CategorySequelizeRepository, CategoryModel } = CategorySequelize;
-describe('DeleteCategoryUseCase Integragion Tests', () => {
-	let repository: CategorySequelize.CategorySequelizeRepository;
-	let useCase: GetCategoryUseCase.UseCase;
+const { CategoryRepository, CategoryModel } = CategorySequelize;
 
-    setupSequelize({ models: [CategoryModel] });
+describe("GetCategoryUseCase Integration Tests", () => {
+  let useCase: GetCategoryUseCase.UseCase;
+  let repository: CategorySequelize.CategoryRepository;
 
-	beforeEach(() => {
-		repository = new CategorySequelizeRepository(CategoryModel);
-		useCase = new GetCategoryUseCase.UseCase(repository);
-	});
+  setupSequelize({ models: [CategoryModel] });
 
-	it('should throw an error when category not found', async () => {
-		await expect(() =>
-			useCase.execute({ id: 'not-found' })
-		).rejects.toThrow(
-			new NotFoundError('Entity not found using ID not-found')
-		);
-	});
+  beforeEach(() => {
+    repository = new CategoryRepository(CategoryModel);
+    useCase = new GetCategoryUseCase.UseCase(repository);
+  });
 
-	it('should delete a category', async () => {
-		const model = await CategoryModel.factory().create();
+  it("should throws error when entity not found", async () => {
+    await expect(() => useCase.execute({ id: "fake id" })).rejects.toThrow(
+      new NotFoundError(`Entity Not Found using ID fake id`)
+    );
+  });
 
-		const foundModel = await useCase.execute({ id: model.id });
-
-        expect(foundModel).not.toBeNull();
-		expect(foundModel).toStrictEqual({
-			id: model.id,
-			name: model.name,
-			description: model.description,
-			is_active: model.is_active,
-			created_at: model.created_at,
-		});
-		
-	});
+  it("should returns a category", async () => {
+    const model = await CategoryModel.factory().create();
+    const output = await useCase.execute({ id: model.id });
+    expect(output).toStrictEqual({
+      id: model.id,
+      name: model.name,
+      description: model.description,
+      is_active: model.is_active,
+      created_at: model.created_at,
+    });
+  });
 });

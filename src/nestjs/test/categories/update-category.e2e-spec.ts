@@ -20,7 +20,7 @@ describe('CategoriesController (e2e)', () => {
                     send_data: { name: faker.name },
                     expected: {
                         message:
-                            "Entity not found using ID e36e81a9-7b70-4e73-a917-cb2e7ed94d2f",
+                            "Entity Not Found using ID e36e81a9-7b70-4e73-a917-cb2e7ed94d2f",
                         statusCode: 404,
                         error: 'Not Found',
                     },

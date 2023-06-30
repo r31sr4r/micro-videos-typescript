@@ -1,5 +1,5 @@
 import ClassValidatorFields from "../../../@seedwork/domain/validators/class-validator-fields";
-import { FieldsError } from "../../../@seedwork/domain/validators/validator-fields-interface";
+import { FieldsErrors  } from "../../../@seedwork/domain/validators/validator-fields-interface";
 import { objectContaining } from "expect";
 import { EntityValidationError } from "../errors/validation-error";
 
@@ -8,7 +8,7 @@ type Received =
   | (() => any);
 
 expect.extend({
-  containsErrorMessages(received: Received, expected: FieldsError) {
+  containsErrorMessages(received: Received, expected: FieldsErrors) {
     if (typeof received === "function") {
       try {
         received();
@@ -33,8 +33,8 @@ function isValid() {
 }
 
 function assertContainsErrorsMessages(
-  expected: FieldsError,
-  received: FieldsError
+  expected: FieldsErrors,
+  received: FieldsErrors
 ) {
   const isMatch = objectContaining(received).asymmetricMatch(expected);
 

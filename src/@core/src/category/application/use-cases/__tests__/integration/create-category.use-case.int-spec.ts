@@ -1,73 +1,91 @@
-import { CategorySequelize } from '#category/infra/db/sequelize/category-sequelize';
-import { setupSequelize } from '#seedwork/infra';
-import { CreateCategoryUseCase } from '../../create-category.use-case';
+import { CreateCategoryUseCase } from "../../create-category.use-case";
+import { CategorySequelize } from "../../../../infra/db/sequelize/category-sequelize";
+import { setupSequelize } from "../../../../../@seedwork/infra/testing/helpers/db";
 
-const { CategorySequelizeRepository, CategoryModel } = CategorySequelize;
+const { CategoryRepository, CategoryModel } = CategorySequelize;
 
-describe('CreateCategoryUseCase Integrations Tests', () => {
-	let useCase: CreateCategoryUseCase.UseCase;
-	let repository: CategorySequelize.CategorySequelizeRepository;
+describe("CreateCategoryUseCase Integration Tests", () => {
+  let useCase: CreateCategoryUseCase.UseCase;
+  let repository: CategorySequelize.CategoryRepository;
 
-	setupSequelize({ models: [CategoryModel] });
+  //setupSequelize({ models: [CategoryModel], ...makeSequelizeOptions(config) });
+  setupSequelize({ models: [CategoryModel], });
 
-	beforeEach(() => {
-		repository = new CategorySequelizeRepository(CategoryModel);
-		useCase = new CreateCategoryUseCase.UseCase(repository);
-	});
+  beforeEach(() => {
+    repository = new CategoryRepository(CategoryModel);
+    useCase = new CreateCategoryUseCase.UseCase(repository);
+  });
 
-	it('should create a new category', async () => {
-		let output = await useCase.execute({
-			name: 'Test Category',
-		});
-		let category = await repository.findById(output.id);
+  // describe("test with test.each", () => {
+  //   const arrange = [
+  //     {
+  //       inputProps: { name: "test" },
+  //       outputProps: {
+  //         name: "test",
+  //         description: null,
+  //         is_active: true,
+  //       },
+  //     },
+  //   ];
+  //   test.each(arrange)("input $inputProps, output $outputProps", async ({ inputProps, outputProps }) => {
+  //     let output = await useCase.execute(inputProps);
+  //     let entity = await repository.findById(output.id);
+  //     expect(output.id).toBe(entity.id);
+  //     expect(output.created_at).toStrictEqual(entity.created_at);
+  //     expect(output).toMatchObject(outputProps);
+  //   });
+  // });
 
-		expect(output).toStrictEqual({
-			id: category.id,
-			name: 'Test Category',
-			description: null,
-			is_active: true,
-			created_at: category.props.created_at,
-		});
+  it("should create a category", async () => {
+    let output = await useCase.execute({ name: "test" });
+    let entity = await repository.findById(output.id);
+    expect(output).toStrictEqual({
+      id: entity.id,
+      name: "test",
+      description: null,
+      is_active: true,
+      created_at: entity.props.created_at,
+    });
 
-		output = await useCase.execute({
-			name: 'Test Category',
-			description: 'Test Category Description',
-			is_active: false,
-		});
+    output = await useCase.execute({
+      name: "test",
+      description: "some description",
+    });
+    entity = await repository.findById(output.id);
+    expect(output).toStrictEqual({
+      id: entity.id,
+      name: "test",
+      description: "some description",
+      is_active: true,
+      created_at: entity.props.created_at,
+    });
 
-		category = await repository.findById(output.id);
+    output = await useCase.execute({
+      name: "test",
+      description: "some description",
+      is_active: true,
+    });
+    entity = await repository.findById(output.id);
+    expect(output).toStrictEqual({
+      id: entity.id,
+      name: "test",
+      description: "some description",
+      is_active: true,
+      created_at: entity.props.created_at,
+    });
 
-		expect(output).toStrictEqual({
-			id: category.id,
-			name: 'Test Category',
-			description: 'Test Category Description',
-			is_active: false,
-			created_at: category.props.created_at,
-		});
-	});
-
-	describe('test with test.each', () => {
-		const arrange = [
-			{
-				inputProps: { name: 'Test Category' },
-				outputProps: {
-					name: 'Test Category',
-					description: null,
-					is_active: true,
-				},
-			},
-		];
-		test.each(arrange)(
-			'input $inputProps, output $outputProps',
-			async ({ inputProps, outputProps }) => {
-				let output = await useCase.execute(inputProps);
-				let category = await repository.findById(output.id);
-				expect(output.id).toBe(category.id);
-				expect(output.created_at).toStrictEqual(
-					category.props.created_at
-				);
-				expect(output).toMatchObject(outputProps);
-			}
-		);
-	});
+    output = await useCase.execute({
+      name: "test",
+      description: "some description",
+      is_active: false,
+    });
+    entity = await repository.findById(output.id);
+    expect(output).toStrictEqual({
+      id: entity.id,
+      name: "test",
+      description: "some description",
+      is_active: false,
+      created_at: entity.props.created_at,
+    });
+  });
 });

@@ -43,7 +43,7 @@ describe('CreateCategoryUseCase Unit Tests', () => {
 
 	it('should throw an error if name is not provided', async () => {
 		await expect(useCase.execute(null as any)).rejects.toThrow(
-			'Entity validation error'
+			'Entity Validation Error'
 		);
 	});
 

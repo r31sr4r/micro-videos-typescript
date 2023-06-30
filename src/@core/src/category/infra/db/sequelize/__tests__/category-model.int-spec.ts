@@ -5,12 +5,11 @@ import { CategorySequelize } from '../category-sequelize';
 const { CategoryModel } = CategorySequelize;
 
 describe('CategoryModel Unit Tests', () => {
-	setupSequelize({models: [CategoryModel]});
+	setupSequelize({ models: [CategoryModel] });
 
-	test('mapping props to columns', async () => {
+	test('mapping props', () => {
 		const attributesMap = CategoryModel.getAttributes();
-		const attributes = Object.keys(attributesMap);
-		expect(attributes.length).toBe(5);
+		const attributes = Object.keys(CategoryModel.getAttributes());
 		expect(attributes).toStrictEqual([
 			'id',
 			'name',
@@ -56,22 +55,28 @@ describe('CategoryModel Unit Tests', () => {
 			field: 'created_at',
 			fieldName: 'created_at',
 			allowNull: false,
-			type: DataType.DATE(),
-		});		
+			type: DataType.DATE(3),
+		});
 	});
 
-	it('should create a new category', async () => {
+	test('create', async () => {
 		const arrange = {
-			id: '667b9345-0bcc-41bd-970d-0df043578a1c',
-			name: 'Category 1',
-			description: 'Description 1',
+			id: '9366b7dc-2d71-4799-b91c-c64adb205104',
+			name: 'test',
 			is_active: true,
 			created_at: new Date(),
 		};
-
 		const category = await CategoryModel.create(arrange);
-
-		expect(category).toBeDefined();
 		expect(category.toJSON()).toStrictEqual(arrange);
 	});
+
+	//primeiro criou categorias
+	//segundo criou categorias
+
+	// sqlite - memory
+
+	//iniciar a conexão
+	//criar tabelas
+	//testes
+	//desconecte banco
 });
